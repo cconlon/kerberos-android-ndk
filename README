@@ -1,0 +1,64 @@
+
+Kerberos Android NDK Sample Application
+
+This is a sample Android NDK application which is a simple GUI wrapper
+around the Kerberos kinit, klist, kvno, and kdestroy client 
+applications. It includes cross-compiled versions of the MIT Kerberos
+libraries as well as the CyaSSL Embedded SSL Library. It should be 
+helpful to Android developers who are interested in using the 
+Kerberos libraries in their own Android NDK Application.
+
+By default, this package uses pre-built static Kerberos and CyaSSL 
+libraries, which are needed in order to be linked to the KerberosApp 
+application's native library (libkerberosapp.so).
+
+===========================================================================
+REQUIREMENTS:
+
+Before building or installing this package, you must have the Android SDK
+and NDK installed and set up on your system.
+
+===========================================================================
+BUILDING:
+
+To build and install this package, run:
+
+android update project -p . -s
+ndk-build
+ant debug
+
+===========================================================================
+INSTALLING:
+
+To install this package in a running Android emulator, run:
+
+ant install
+
+Before running the KerberosApp application, the user needs to install both
+a Keytab file and a Kerberos configuration file. Reference the MIT Kerberos
+documentation for guidelines for creating these files. Once created, they
+can be installed using the adb push command, using:
+
+adb push <local-file-path> <destination-file-path>
+
+For example, to load a krb5.conf file from the current directory to an 
+Android emulator under the /data/local/kerberos directory, run:
+
+adb push krb5.conf /data/local/kerberos/
+
+===========================================================================
+DEFAULT STORAGE LOCATIONS:
+
+The following locations are the default paths used for the Kerberos
+sample application.
+
+Kerberos config file:   /data/local/kerberos/krb5.conf
+Credentials cache:      /data/local/kerberos/ccache/krb5cc_<uid>
+Keytab:                 /data/local/kerberos/krb5.keytab
+
+===========================================================================
+SUPPORT:
+
+If you have any questions or comments, please contact
+support@yassl.com or the MIT Kerberos community.
+
