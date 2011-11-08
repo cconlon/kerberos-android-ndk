@@ -20,7 +20,7 @@ void generateArgv(char* input, int argc, char** argv)
 
     LOGI("Entered generateArgv");
     for(i = 0; i < argc+2; i++) {
-        if(i == 0) {                /* add command name */
+        if(i == 0) {             /* add command name */
             argv[i] = (char*)malloc(5*sizeof(char*));
             strcpy(argv[i], "kinit");
         }
@@ -46,18 +46,12 @@ void generateArgv(char* input, int argc, char** argv)
 void releaseArgv(int argc, char** argv)
 {
     int i;
-    LOGI("Entered releaseArgv");
 
     for (i = 0; i < argc; i++){
-        LOGI("releaseArgv... trying to free argv[%d] = %s", i, argv[i]);
-        LOGI("releaseArgv... argv[%d] = %p", i, &argv[i]);
         free(argv[i]);
-        LOGI("releaseArgv... freed argv[%d]", i);
     }
 
-    LOGI("Freed argv elements");
     free(argv);
-    LOGI("Freed argv itself");
 }
 
 /*
@@ -84,7 +78,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 {
     JNIEnv* env;
     
-    LOGI("Loaded libkerberosapp, entered JNI_OnLoad()");
+    LOGI("Loaded libkerberosapp");
 
     if ((*jvm)->GetEnv(jvm, (void**) &env, JNI_VERSION_1_6) != JNI_OK)
         return -1;
@@ -115,6 +109,9 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
  * Class:     com_mit_kerberos_KerberosAppActivity
  * Method:    nativeKinit
  * Signature: (Ljava/lang/String;I)I
+ *
+ * Wrapper around native kinit application
+ *
  */
 JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKinit
   (JNIEnv* env, jobject obj, jstring argString, jint argCount)
@@ -126,14 +123,11 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKinit
     char *args_copy;
     char **argv = (char**)malloc((numArgs+2) * sizeof(char*));
 
-    LOGI("Entered nativeKinit function");
-
     /* Cache a reference to the calling object */
     cached_obj = (*env)->NewGlobalRef(env, obj);
 
     /* get original argv string from Java */
     args = (*env)->GetStringUTFChars(env, argString, &isCopy);
-    LOGI("String from JAVA is: %s", args);
 
     /* make a copy of argString to use with strtok */
     args_copy = malloc(strlen(args) + 1);
@@ -141,20 +135,15 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKinit
 
     /* free argString */
     (*env)->ReleaseStringUTFChars(env, argString, args);
-    LOGI("Freed argString");
 
     /* generate argv list */ 
     generateArgv(args_copy, numArgs, argv);
 
     /* run kinit */
     ret = kinit_driver(env, obj, numArgs+1, argv); 
-    LOGI("Returned back to nativeKinit function");
    
     free(args_copy);
-    LOGI("Freed args_copy");
-   
     releaseArgv(numArgs+1, argv);
-    LOGI("Freed argv");
     
     if(ret == 1)
         return 1;
@@ -165,6 +154,9 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKinit
  * Class:     com_mit_kerberos_KerberosAppActivity
  * Method:    nativeKlist
  * Signature: (Ljava/lang/String;I)I
+ *
+ * Wrapper around native klist application
+ *
  */
 JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKlist
   (JNIEnv* env, jobject obj, jstring argString, jint argCount)
@@ -176,14 +168,11 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKlist
     char *args_copy;
     char **argv = (char**)malloc((numArgs+2) * sizeof(char*));
 
-    LOGI("Entered nativeKlist function");
-
     /* Cache a reference to the calling object */
     cached_obj = (*env)->NewGlobalRef(env, obj);
 
     /* get original argv string from Java */
     args = (*env)->GetStringUTFChars(env, argString, &isCopy);
-    LOGI("String from JAVA is: %s", args);
 
     /* make a copy of argString to use with strtok */
     args_copy = malloc(strlen(args) + 1);
@@ -191,20 +180,15 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKlist
 
     /* free argString */
     (*env)->ReleaseStringUTFChars(env, argString, args);
-    LOGI("Freed argString");
 
     /* generate argv list */ 
     generateArgv(args_copy, numArgs, argv);
 
     /* run kinit */
     ret = klist_driver(env, obj, numArgs+1, argv); 
-    LOGI("Returned back to nativeKlist function");
    
     free(args_copy);
-    LOGI("Freed args_copy");
-   
     releaseArgv(numArgs+1, argv);
-    LOGI("Freed argv");
     
     if(ret == 1)
         return 1;
@@ -215,6 +199,9 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKlist
  * Class:     com_mit_kerberos_KerberosAppActivity
  * Method:    nativeKvno
  * Signature: (Ljava/lang/String;I)I
+ *
+ * Wrapper around native kvno application
+ *
  */
 JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKvno
   (JNIEnv* env, jobject obj, jstring argString, jint argCount)
@@ -226,14 +213,11 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKvno
     char *args_copy;
     char **argv = (char**)malloc((numArgs+2) * sizeof(char*));
 
-    LOGI("Entered nativeKvno function");
-
     /* Cache a reference to the calling object */
     cached_obj = (*env)->NewGlobalRef(env, obj);
 
     /* get original argv string from Java */
     args = (*env)->GetStringUTFChars(env, argString, &isCopy);
-    LOGI("String from JAVA is: %s", args);
 
     /* make a copy of argString to use with strtok */
     args_copy = malloc(strlen(args) + 1);
@@ -241,20 +225,15 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKvno
 
     /* free argString */
     (*env)->ReleaseStringUTFChars(env, argString, args);
-    LOGI("Freed argString");
 
     /* generate argv list */ 
     generateArgv(args_copy, numArgs, argv);
 
     /* run kinit */
     ret = kvno_driver(env, obj, numArgs+1, argv); 
-    LOGI("Returned back to nativeKlist function");
    
     free(args_copy);
-    LOGI("Freed args_copy");
-   
     releaseArgv(numArgs+1, argv);
-    LOGI("Freed argv");
     
     if(ret == 1)
         return 1;
@@ -265,6 +244,9 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKvno
  * Class:     com_mit_kerberos_KerberosAppActivity
  * Method:    nativeKdestroy
  * Signature: (Ljava/lang/String;I)I
+ *
+ * Wrapper around native kdestroy application
+ *
  */
 JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKdestroy
   (JNIEnv* env, jobject obj, jstring argString, jint argCount)
@@ -276,14 +258,11 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKdestroy
     char *args_copy;
     char **argv = (char**)malloc((numArgs+2) * sizeof(char*));
 
-    LOGI("Entered nativeKdestroy function");
-
     /* Cache a reference to the calling object */
     cached_obj = (*env)->NewGlobalRef(env, obj);
 
     /* get original argv string from Java */
     args = (*env)->GetStringUTFChars(env, argString, &isCopy);
-    LOGI("String from JAVA is: %s", args);
 
     /* make a copy of argString to use with strtok */
     args_copy = malloc(strlen(args) + 1);
@@ -291,20 +270,15 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKdestroy
 
     /* free argString */
     (*env)->ReleaseStringUTFChars(env, argString, args);
-    LOGI("Freed argString");
 
     /* generate argv list */ 
     generateArgv(args_copy, numArgs, argv);
 
     /* run kdestroy */
     ret = kdestroy_driver(env, obj, numArgs+1, argv); 
-    LOGI("Returned back to nativeKdestroy function");
    
     free(args_copy);
-    LOGI("Freed args_copy");
-   
     releaseArgv(numArgs+1, argv);
-    LOGI("Freed argv");
     
     if(ret == 1)
         return 1;
@@ -313,20 +287,15 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKdestroy
 
 /*
  * Android log function, printf-style.
- * Logs input string to Android log as well as
- * GUI TextView.
+ * Logs input string to GUI TextView.
  */
 void androidPrint(const char* format, ...) 
 {
     va_list args;
     char appendString[4096];
 
-    LOGI("Entered androidPrint...");
     va_start(args, format);
-    LOGI("androidPrint.... A");
-    //LOGI(format, args);
     vsnprintf(appendString, sizeof(appendString), format, args);
-    LOGI("androidPrint.... B");
     appendText(appendString);
     va_end(args);
 }
@@ -359,10 +328,10 @@ int appendText(char* input)
     jmethodID mid;      /* com.mit.kerberos.KerberosApp.appendText() */
     jstring javaOutput; /* text to append */
   
-    LOGI("Entered appendText..."); 
     env = GetJNIEnv(cached_jvm);
     cls = (*env)->GetObjectClass(env, cached_obj);
-    mid = (*env)->GetMethodID(env, cls, "appendText", "(Ljava/lang/String;)V");
+    mid = (*env)->GetMethodID(env, cls, "appendText", 
+            "(Ljava/lang/String;)V");
     if (mid == 0)
     {
         LOGI("Unable to find Java appendText method");
@@ -370,7 +339,8 @@ int appendText(char* input)
     }
     else {
         javaOutput = (*env)->NewStringUTF(env, input);
-        if (env == NULL || cached_obj == NULL || mid == NULL || javaOutput == NULL)
+        if (env == NULL || cached_obj == NULL || 
+            mid == NULL || javaOutput == NULL)
         {
             LOGI("We have a null variable in native code");
             return 1;

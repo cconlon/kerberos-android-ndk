@@ -24,18 +24,19 @@ extern jobject cached_obj;
 #define log(...)        androidPrint(__VA_ARGS__)
 #define com_err(progname, code, ...)    androidError(progname, code, __VA_ARGS__)
 
+extern JNIEnv* GetJNIEnv(JavaVM *jvm);
 extern void generateArgv(char*, int, char**);
 extern void releaseArgv(int, char**);
-extern JNIEnv* GetJNIEnv(JavaVM *jvm);
-extern int kinit_driver(JNIEnv*, jobject, int, char**);
-extern int klist_driver(JNIEnv*, jobject, int, char**);
-extern int kvno_driver(JNIEnv*, jobject, int, char**);
-extern int kdestroy_driver(JNIEnv*, jobject, int, char**);
+
 extern void androidPrint(const char*, ...);
 extern void androidError(const char*, errcode_t, const char*, ...);
 extern int appendText(char*);
 
+extern int kinit_driver(JNIEnv*, jobject, int, char**);
 extern int klist_driver(JNIEnv*, jobject, int, char**);
+extern int kvno_driver(JNIEnv*, jobject, int, char**);
+extern int kdestroy_driver(JNIEnv*, jobject, int, char**);
+
 #ifdef __cplusplus
 }
 #endif

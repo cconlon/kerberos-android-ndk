@@ -466,7 +466,6 @@ k5_begin(opts, k5)
             return 0;
         }
         if (opts->verbose) {
-            LOGI("Using specified cache: %s\n", opts->k5_cache_name);
             log("Using specified cache: %s\n",
                     opts->k5_cache_name);
         }

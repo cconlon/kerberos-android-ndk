@@ -122,7 +122,6 @@ klist_driver(env, obj, argc, argv)
     int c;
     char *name;
     int mode;
-    int i;
 
     /* save JNI environment */ 
     jni_env = GetJNIEnv(cached_jvm);
@@ -150,84 +149,59 @@ main(argc, argv)
     name = NULL;
     mode = DEFAULT;
     
-    LOGI("argc = %d", argc);
-    
-    for(i = 0; i < argc; i++)
-    {
-        LOGI("klist.... klist_driver... option i: %d, s: %s", i, argv[i]);
-    }
-   
     /* V=version so v can be used for verbose later if desired.  */
     while ((c = getopt(argc, argv, "dfetKsnack45V")) != -1) {
-        LOGI("while loop pass__________________");
         switch (c) {
         case 'd':
-            LOGI("case d");
             show_adtype = 1;
             break;
         case 'f':
-            LOGI("case f");
             show_flags = 1;
             break;
         case 'e':
-            LOGI("case e");
             show_etype = 1;
             break;
         case 't':
-            LOGI("case t");
             show_time = 1;
             break;
         case 'K':
-            LOGI("case K");
             show_keys = 1;
             break;
         case 's':
-            LOGI("case s");
             status_only = 1;
             break;
         case 'n':
-            LOGI("case n");
             no_resolve = 1;
             break;
         case 'a':
-            LOGI("case a");
             show_addresses = 1;
             break;
         case 'c':
-            LOGI("case c");
             if (mode != DEFAULT) usage();
             mode = CCACHE;
             break;
         case 'k':
-            LOGI("case k");
             if (mode != DEFAULT) usage();
             mode = KEYTAB;
             break;
         case '4':
-            LOGI("case 4");
             log("Kerberos 4 is no longer supported\n");
             exit(3);
             break;
         case '5':
-            LOGI("case 5");
             break;
         case 'V':
-            LOGI("case V");
             print_version = 1;
             break;
         default:
-            LOGI("case default");
             usage();
             break;
         }
     }
 
-    LOGI("klist_driver.... A");
-    if (no_resolve && !show_addresses) {
+    if (no_resolve && !show_addresses)
         usage();
-    }
 
-    LOGI("klist_driver.... B");
     if (mode == DEFAULT || mode == CCACHE) {
         if (show_time || show_keys)
             usage();
@@ -236,14 +210,12 @@ main(argc, argv)
             usage();
     }
 
-    LOGI("klist_driver.... C");
     if (argc - optind > 1) {
         log("Extra arguments (starting with \"%s\").\n",
                 argv[optind+1]);
         usage();
     }
 
-    LOGI("klist_driver.... D");
     if (print_version) {
 #ifdef _WIN32                   /* No access to autoconf vars; fix somehow. */
         printf("Kerberos for Windows\n");
@@ -253,7 +225,6 @@ main(argc, argv)
         exit(0);
     }
 
-    LOGI("klist_driver.... E");
     name = (optind == argc-1) ? argv[optind] : 0;
 
     now = time(0);
@@ -280,7 +251,6 @@ main(argc, argv)
 #endif
         }
 
-        LOGI("klist_driver.... F");
         if (mode == DEFAULT || mode == CCACHE)
             do_ccache(name);
         else
@@ -385,20 +355,17 @@ void do_ccache(name)
     krb5_error_code code;
     int exit_status = 0;
 
-    LOGI("klist.... do_ccache... Entered");
     if (status_only)
         /* exit_status is set back to 0 if a valid tgt is found */
         exit_status = 1;
 
     if (name == NULL) {
-    LOGI("klist.... do_ccache... name == NULL");
         if ((code = krb5_cc_default(kcontext, &cache))) {
             if (!status_only)
                 com_err(progname, code, "while getting default ccache");
             exit(1);
         }
     } else {
-    LOGI("klist.... do_ccache... name != NULL");
         if ((code = krb5_cc_resolve(kcontext, name, &cache))) {
             if (!status_only)
                 com_err(progname, code, "while resolving ccache %s",
@@ -408,15 +375,12 @@ void do_ccache(name)
     }
 
     flags = 0;                          /* turns off OPENCLOSE mode */
-    LOGI("klist.... do_ccache... G");
     if ((code = krb5_cc_set_flags(kcontext, cache, flags))) {
         if (code == KRB5_FCC_NOFILE) {
-            LOGI("klist.... do_ccache... KRB5_FCC_NOFILE");
             if (!status_only) {
                 com_err(progname, code, "(ticket cache %s:%s)",
                         krb5_cc_get_type(kcontext, cache),
                         krb5_cc_get_name(kcontext, cache));
-                LOGI("Error (ticket cache %s:%s)", krb5_cc_get_type(kcontext, cache), krb5_cc_get_name(kcontext, cache));
 #ifdef KRB5_KRB4_COMPAT
                 if (name == NULL)
                     do_v4_ccache(0);
@@ -435,19 +399,16 @@ void do_ccache(name)
         exit(1);
 #endif
     }
-    LOGI("klist.... do_ccache... H");
     if ((code = krb5_cc_get_principal(kcontext, cache, &princ))) {
         if (!status_only)
             com_err(progname, code, "while retrieving principal name");
         exit(1);
     }
-    LOGI("klist.... do_ccache... I");
     if ((code = krb5_unparse_name(kcontext, princ, &defname))) {
         if (!status_only)
             com_err(progname, code, "while unparsing principal name");
         exit(1);
     }
-    LOGI("klist.... do_ccache... J");
     if (!status_only) {
 #ifdef ANDROID
         log("Ticket cache: %s:%s\nDefault principal: %s",
@@ -464,7 +425,6 @@ void do_ccache(name)
                (int) ' ');
         fputs("Service principal\n", stdout);
     }
-    LOGI("klist.... do_ccache... K");
     if ((code = krb5_cc_start_seq_get(kcontext, cache, &cur))) {
         if (!status_only)
             com_err(progname, code, "while starting to retrieve tickets");
@@ -487,22 +447,17 @@ void do_ccache(name)
         krb5_free_cred_contents(kcontext, &creds);
     }
     if (code == KRB5_CC_END) {
-        LOGI("klist.... do_ccache... code == KRB5_CC_END");
         if ((code = krb5_cc_end_seq_get(kcontext, cache, &cur))) {
             if (!status_only){
-                LOGI("Error while finishing ticket retrieval");
                 com_err(progname, code, "while finishing ticket retrieval");
             } 
-            LOGI("klist.... do_ccache... exiting A");
             exit(1);
         }
         flags = KRB5_TC_OPENCLOSE;      /* turns on OPENCLOSE mode */
         if ((code = krb5_cc_set_flags(kcontext, cache, flags))) {
             if (!status_only){
-                LOGI("Error while closing ccache");
                 com_err(progname, code, "while closing ccache");
             }
-            LOGI("klist.... do_ccache... exiting B");
 #ifdef ANDROID
             return;
 #else
@@ -511,10 +466,9 @@ void do_ccache(name)
         }
 #ifdef KRB5_KRB4_COMPAT
         if (name == NULL && !status_only)
-            LOGI("klist.... do_ccache... KRB5_KRB4_COMPAT");
             do_v4_ccache(0);
 #endif
-        LOGI("klist.... exiting C");
+
 #ifdef ANDROID
         return;
 #else
@@ -523,9 +477,7 @@ void do_ccache(name)
     } else {
         if (!status_only){
             com_err(progname, code, "while retrieving a ticket");
-            LOGI("Error while retrieving a ticket");
         }
-        LOGI("klist.... do_ccache... exiting D");
 #ifdef ANDROID
         return;
 #else
@@ -818,8 +770,6 @@ fillit(f, num, c)
 {
     unsigned int i;
 
-    LOGI("************ entered fillit");
     for (i=0; i<num; i++)
         fputc(c, f);
-    LOGI("************ exit fillit");
 }
