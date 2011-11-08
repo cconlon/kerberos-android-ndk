@@ -27,6 +27,11 @@ android update project -p . -s
 ndk-build
 ant debug
 
+If you want to rebuild the pre-built Kerberos libraries, please use the
+android-config.sh shell script. This will allow the MIT Kerberos libraries
+to be cross-compiled for the Android platform. More detailed instructions 
+can be found in the script comments.
+
 ===========================================================================
 INSTALLING:
 
