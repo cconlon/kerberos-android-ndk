@@ -24,8 +24,8 @@
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
- *
  * Initialize a credentials cache.
+ *
  */
 
 #include "autoconf.h"
@@ -39,11 +39,11 @@
 #include <com_err.h>
 
 #ifdef ANDROID
-    #include "kerberosapp.h"
-    static JNIEnv* jni_env;
-    static jobject class_obj;
+#include "kerberosapp.h"
+static JNIEnv* jni_env;
+static jobject class_obj;
 #else
-    #define log(...)    fprintf(stderr, __VA_ARGS__)
+#define log(...)    fprintf(stderr, __VA_ARGS__)
 #endif /* ANDROID */
 
 #ifdef GETOPT_LONG

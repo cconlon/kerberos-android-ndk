@@ -38,11 +38,11 @@
 #include <string.h>
 
 #ifdef ANDROID
-    #include "kerberosapp.h"
-    static JNIEnv* jni_env; 
-    static jobject class_obj;
+#include "kerberosapp.h"
+static JNIEnv* jni_env; 
+static jobject class_obj;
 #else
-    #define log(...)    fprintf(stderr, __VA_ARGS__)
+#define log(...)    fprintf(stderr, __VA_ARGS__)
 #endif /* ANDROID */
 
 extern int optind;

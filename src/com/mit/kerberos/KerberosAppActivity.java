@@ -1,24 +1,32 @@
 package com.mit.kerberos;
 
 /**
- * Copyright (C) 2006-2011 Sawtooth Consulting Ltd.
+ * KerberosAppActivity.java
  *
- * This package is free software; you can redistribute it 
- * and/or modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either version 2 of 
- * the License, or (at your option) any later version.
+ * Copyright 1990, 2008 by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
  *
- * This package is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  *
- * Filename: KerberosAppActivity.java
- * Author: yaSSL
+ * Original source developed by yaSSL (http://www.yassl.com)
+ *
  * Description: Android application to perform the basic functionality of 
  *              Kerberos' Kinit, Klist, and Kdestroy. In other words,
  *              (1) Get a ticket with Kinit
