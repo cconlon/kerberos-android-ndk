@@ -1,4 +1,3 @@
-/* -*- mode: c; c-basic-offset: 4; indent-tabs-mode: nil -*- */
 /* swig/Util.java - SWIG GSS-API wrapper utility functions */
 /*
  * Copyright (C) 2012 by the Massachusetts Institute of Technology.
@@ -22,6 +21,12 @@
  * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
+ *
+ * Original source developed by yaSSL (http://www.yassl.com)
+ *
+ * Description:
+ * Java MIT Kerberos GSS-API interface utility functions.
+ *
  */
 package edu.mit.kerberos;
 
