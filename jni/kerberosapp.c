@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "com_mit_kerberos_KerberosAppActivity.h"
+#include "edu_mit_kerberos_KerberosAppActivity.h"
 #include "kerberosapp.h"
 
 /* Global JNI Variables */
@@ -135,14 +135,41 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
 }
 
 /*
- * Class:     com_mit_kerberos_KerberosAppActivity
+ * Class:     edu_mit_kerberos_KerberosAppActivity
+ * Method:    nativeSetKRB5CCNAME
+ * Signature: (Ljava/lang/String)I
+ *
+ * Set the KRB5CCNAME environment variable to point to our desired
+ * ticket cache.
+ *
+ */
+JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeSetKRB5CCNAME
+  (JNIEnv* env, jobject obj, jstring argString)
+{
+    jboolean isCopy;
+    int ret;
+    const char *args;
+
+    /* Get original KRB5CCNAME path string from Java */
+    args = (*env)->GetStringUTFChars(env, argString, &isCopy);
+
+    ret = setenv("KRB5CCNAME", args, 1);
+
+    /* free argString */
+    (*env)->ReleaseStringUTFChars(env, argString, args);
+    
+    return ret;
+}
+
+/*
+ * Class:     edu_mit_kerberos_KerberosAppActivity
  * Method:    nativeKinit
  * Signature: (Ljava/lang/String;I)I
  *
  * Wrapper around native kinit application
  *
  */
-JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKinit
+JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeKinit
   (JNIEnv* env, jobject obj, jstring argString, jint argCount)
 {
     jboolean isCopy;
@@ -180,14 +207,14 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKinit
 }
 
 /*
- * Class:     com_mit_kerberos_KerberosAppActivity
+ * Class:     edu_mit_kerberos_KerberosAppActivity
  * Method:    nativeKlist
  * Signature: (Ljava/lang/String;I)I
  *
  * Wrapper around native klist application
  *
  */
-JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKlist
+JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeKlist
   (JNIEnv* env, jobject obj, jstring argString, jint argCount)
 {
     jboolean isCopy;
@@ -225,14 +252,14 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKlist
 }
 
 /*
- * Class:     com_mit_kerberos_KerberosAppActivity
+ * Class:     edu_mit_kerberos_KerberosAppActivity
  * Method:    nativeKvno
  * Signature: (Ljava/lang/String;I)I
  *
  * Wrapper around native kvno application
  *
  */
-JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKvno
+JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeKvno
   (JNIEnv* env, jobject obj, jstring argString, jint argCount)
 {
     jboolean isCopy;
@@ -270,14 +297,14 @@ JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKvno
 }
 
 /*
- * Class:     com_mit_kerberos_KerberosAppActivity
+ * Class:     edu_mit_kerberos_KerberosAppActivity
  * Method:    nativeKdestroy
  * Signature: (Ljava/lang/String;I)I
  *
  * Wrapper around native kdestroy application
  *
  */
-JNIEXPORT jint JNICALL Java_com_mit_kerberos_KerberosAppActivity_nativeKdestroy
+JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeKdestroy
   (JNIEnv* env, jobject obj, jstring argString, jint argCount)
 {
     jboolean isCopy;
@@ -353,8 +380,8 @@ void androidError(const char* progname, errcode_t code, const char* format, ...)
 int appendText(char* input)
 {
     JNIEnv* env;
-    jclass cls;         /* com.mit.kerberos.KerberosApp */
-    jmethodID mid;      /* com.mit.kerberos.KerberosApp.appendText() */
+    jclass cls;         /* edu.mit.kerberos.KerberosApp */
+    jmethodID mid;      /* edu.mit.kerberos.KerberosApp.appendText() */
     jstring javaOutput; /* text to append */
   
     env = GetJNIEnv(cached_jvm);
