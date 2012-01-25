@@ -37,7 +37,10 @@ https://developer.android.com/guide/developing/tools/emulator.html
 ===========================================================================
 BUILDING:
 
-To build and install this package, including Java GSS-API bindings, run:
+To build and install this package, including Java GSS-API bindings, run
+the following commands. If you would like to use the GSS-API example
+client, please update your client and server settings in
+./src/edu/mit/kerberos/KerberosAppActivity.java before building the project.
 
 android update project -p . -s
 swig -java -package edu.mit.kerberos -outdir ./src/edu/mit/kerberos
