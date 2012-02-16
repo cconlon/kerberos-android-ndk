@@ -3,9 +3,9 @@ Kerberos Android NDK Sample Application
 
 This is a sample Android NDK application which acts as a simple GUI wrapper
 around the MIT Kerberos kinit, klist, kvno, and kdestroy client 
-applications as well as provides a Java GSS-API interface. The GSS-API
-interface is a Java wrapper for the existing Kerberos GSS-API C-bindings and 
-was created using SWIG. 
+applications as well as provides a sample client which uses the Java 
+GSS-API interface. The GSS-API interface is a Java wrapper for the existing 
+Kerberos GSS-API C-bindings and was created using SWIG. 
 
 This package includes cross-compiled versions of the MIT Kerberos
 libraries as well as the CyaSSL Embedded SSL Library. It should be 
@@ -14,7 +14,7 @@ Kerberos libraries or the GSS-API interface in their own Android NDK
 Applications.
 
 By default, this package uses pre-built static Kerberos and CyaSSL 
-libraries, which are needed in order to be linked to the KerberosApp 
+libraries which are needed in order to be linked to the KerberosApp 
 application's native library (libkerberosapp.so).
 
 For detailed information on the Java GSS-API interface, please see the

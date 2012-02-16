@@ -1,8 +1,8 @@
 /*
  * kerberosapp.c
  *
- * Copyright 1990, 2008 by the Massachusetts Institute of Technology.
- * All Rights Reserved.
+ * Copyright (C) 2012 by the Massachusetts Institute of Technology.
+ * All rights reserved.
  *
  * Export of this software from the United States of America may
  *   require a specific license from the United States Government.

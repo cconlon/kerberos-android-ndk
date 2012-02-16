@@ -24,7 +24,6 @@
  *
  * Original source developed by yaSSL (http://www.yassl.com)
  *
- * Description:
  * Java MIT Kerberos GSS-API interface utility functions.
  *
  */
@@ -44,10 +43,10 @@ public class Util implements gsswrapperConstants{
     {
         System.out.println("Error: " + msg);
         System.out.println("maj_stat = " + maj_stat + ", min_stat = " 
-                + (int)min_stat[0]);
+                           + (int)min_stat[0]);
         tv.append("Error: " + msg + "\n");
         tv.append("maj_stat = " + maj_stat + ", min_stat = " 
-                + (int)min_stat[0] + "\n");
+                  + (int)min_stat[0] + "\n");
         display_status(tv, min_stat, maj_stat);
         System.exit(1);
     }
@@ -60,10 +59,10 @@ public class Util implements gsswrapperConstants{
     {
         System.out.println("Error: " + msg);
         System.out.println("maj_stat = " + maj_stat + ", min_stat = " 
-                + (int)min_stat[0]);
+                           + (int)min_stat[0]);
         tv.append("Error: " + msg + "\n");
         tv.append("maj_stat = " + maj_stat + ", min_stat = " 
-                + (int)min_stat[0] + "\n");
+                  + (int)min_stat[0] + "\n");
         display_status(tv, min_stat, maj_stat);
     }
     
@@ -87,9 +86,9 @@ public class Util implements gsswrapperConstants{
             System.exit(1);
         }
         System.out.println("Error message (major): " 
-                + storage_buffer.getValue());
+                           + storage_buffer.getValue());
         tv.append("Error message (major): " 
-                + storage_buffer.getValue() + "\n");
+                  + storage_buffer.getValue() + "\n");
         
         // Print mechanism minor status code error
         ret = gsswrapper.gss_display_status_wrap(maj_stat, min_stat[0], 
@@ -101,9 +100,9 @@ public class Util implements gsswrapperConstants{
             System.exit(1);
         }
         System.out.println("Error message (minor): " 
-                + storage_buffer.getValue());
+                           + storage_buffer.getValue());
         tv.append("Error message (minor): " 
-                + storage_buffer.getValue() + "\n");
+                  + storage_buffer.getValue() + "\n");
     }
 
     /*
@@ -119,13 +118,12 @@ public class Util implements gsswrapperConstants{
             /* First send the size of our byte array */
             byte[] size = Util.intToByteArray(outputToken.length);
             System.out.println("... sending byte array size: " +
-                    Util.byteArrayToInt(size));
+                               Util.byteArrayToInt(size));
             outStream.write(size);
 
 
             /* Now send our actual byte array */
             System.out.println("... sending byte array: ");
-            //printByteArray(outputToken);
             System.out.println("... outputToken.length = " + outputToken.length);
             outStream.write(outputToken);
             return 0;

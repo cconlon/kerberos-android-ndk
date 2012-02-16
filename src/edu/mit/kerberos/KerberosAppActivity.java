@@ -3,8 +3,8 @@ package edu.mit.kerberos;
 /*
  * KerberosAppActivity.java
  *
- * Copyright 1990, 2008 by the Massachusetts Institute of Technology.
- * All Rights Reserved.
+ * Copyright (C) 2012 by the Massachusetts Institute of Technology.
+ * All rights reserved.
  *
  * Export of this software from the United States of America may
  *   require a specific license from the United States Government.
@@ -84,7 +84,6 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 			
 			TextView tv = (TextView) findViewById(R.id.textView);
 			EditText principal = (EditText) findViewById(R.id.editText1);
-			//uid = android.os.Process.myUid();
 			String prinValue = principal.getText().toString();
             int ret = 0;
 			
@@ -437,7 +436,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
         maj_status = gsswrapper.gss_indicate_mechs(min_status, mech_set);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "gss_indicate_mechs(mech_set)", min_status,
-                    maj_status);
+                              maj_status);
             gsswrapper.gss_release_oid_set(min_status, mech_set);
             return -1;
         }
@@ -455,7 +454,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                     gsswrapper.getGSS_C_NT_USER_NAME(), clientName);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError(tv, "gss_import_name(inClientName)", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
 
@@ -466,7 +465,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                     null, time_rec);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError(tv, "gss_acquire_cred", min_status,
-                        maj_status);
+                                  maj_status);
                 return -1;
             }
 
@@ -478,7 +477,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 
                 if (maj_status != GSS_S_COMPLETE) {
                     Util.displayError(tv, "setting negotiation mechanism", 
-                            min_status, maj_status);
+                                      min_status, maj_status);
                     return -1;
                 } else {
                     tv.append("Successfully set neg. mechanism\n");
@@ -496,14 +495,14 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 clientCredentials, name, lifetime, cred_usage, temp_mech_set);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "gss_inquire_cred(temp_mech_set)", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
         maj_status = gsswrapper.gss_release_oid_set(min_status,
                 temp_mech_set);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "gss_release_oid_set(temp_mech_set)", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -513,7 +512,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 clientName, clientName_dup);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "duplicating client name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
         gsswrapper.gss_release_name(min_status, clientName_dup);
@@ -524,7 +523,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 clientName, gss_mech_krb5, clientCanonicalized);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "canonicalizing client name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -553,7 +552,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                    gsswrapper.getGSS_C_NT_HOSTBASED_SERVICE(), serverName);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "gss_import_name(inServiceName)", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -597,7 +596,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 byte[] temp_token = new byte[(int)outputToken.getLength()];
                 temp_token = gsswrapper.getDescArray(outputToken);
                 tv.append("Generated Token Length = " + 
-                        temp_token.length + "\n");
+                          temp_token.length + "\n");
                 err = Util.WriteToken(serverOut, temp_token);
 
                 /* free the output token */
@@ -621,11 +620,11 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                         gsswrapper.setDescArray(inputToken, inputTokenBuffer);
                         inputToken.setLength(inputTokenBuffer.length);
                         tv.append("Received Token Length = " + 
-                                inputToken.getLength() + "\n");
+                                  inputToken.getLength() + "\n");
                     }
                 } else if (maj_status != GSS_S_COMPLETE) {
                     Util.displayError(tv, "gss_init_sec_context", 
-                            min_status, maj_status);
+                                      min_status, maj_status);
                     return -1;
                 }
             }
@@ -671,7 +670,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "wrapping message, gss_wrap", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else if (state[0] == 0) {
             tv.append("Warning! Message not encrypted.\n");
@@ -683,7 +682,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
         err = Util.WriteToken(serverOut, temp_token);
         if (err != 0) {
             tv.append("Error sending wrapped message to server, " +
-                    "WriteToken\n");
+                      "WriteToken\n");
             return -1;
         }
        
@@ -701,7 +700,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "verifying signature, gss_verify_mic", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             tv.append("Signature Verified\n");
@@ -735,7 +734,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 context, context_token);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "exporting security context", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             tv.append("Successfully exported security context\n");
@@ -745,7 +744,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 context_token, context);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "importing security context", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             tv.append("Successfully imported security context\n");
@@ -759,7 +758,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "wrapping message, gss_seal", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else if (state[0] == 0) {
             tv.append("Warning!  Message not encrypted.\n");
@@ -771,7 +770,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
         err = Util.WriteToken(serverOut, temp_token);
         if (err != 0) {
             tv.append("Error sending wrapped message to server, " +
-                    "WriteToken\n");
+                      "WriteToken\n");
             return -1;
         }
        
@@ -789,7 +788,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "verifying signature, gss_verify", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             tv.append("Signature Verified\n");
@@ -834,7 +833,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 is_local, is_open);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Inquiring context:  gss_inquire_context", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -843,7 +842,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 time_rec);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "checking for valid context", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -852,7 +851,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 src_name, sname, name_type);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Displaying source name:  gss_display_name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -861,7 +860,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 targ_name, tname, name_type);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Displaying target name:  gss_display_name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -885,7 +884,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 name_type, oid_name);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Converting oid->string:  gss_oid_to_str", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -897,7 +896,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 mechanism, mech_attrs, known_attrs);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Inquiring mechanism attributes", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
         tv.append("  Mechanism Attributes:\n");
@@ -911,7 +910,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                     mech_attrs.getElement(j), name, short_desc, long_desc);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError(tv, "Displaying mechanism attributes", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
             tv.append("    " + name.getValue() + "\n");
@@ -932,7 +931,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                     known_attrs.getElement(k), name, short_desc, long_desc);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError(tv, "Displaying known attributes", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
             tv.append("    " + name.getValue() + "\n");
@@ -949,7 +948,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 mechanism, mech_names);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Inquiring mech names", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -957,7 +956,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 mechanism, oid_name);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Converting oid->string", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -969,7 +968,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                     mech_names.getElement(i), oid_name);
             if (maj_status != GSS_S_COMPLETE) {
                 Util.displayError(tv, "Converting oid->string", 
-                        min_status, maj_status);
+                                  min_status, maj_status);
                 return -1;
             }
             tv.append("  " + i + ": " + oid_name.getValue() + "\n");
@@ -982,7 +981,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 mechanism, sasl_mech_name, mech_name, mech_description);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Inquiring SASL name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
         tv.append("SASL mech: " + sasl_mech_name.getValue() + "\n");
@@ -995,7 +994,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 sasl_mech_name, oid);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "Inquiring mechs for SASL name", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -1011,11 +1010,11 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 100, max_size);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "determining largest wrapped message size",
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             tv.append("Largest message size able to be wrapped: " 
-                    + max_size[0] + "\n");
+                      + max_size[0] + "\n");
         }
 
         gsswrapper.gss_release_buffer(min_status, sasl_mech_name);
@@ -1055,15 +1054,15 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 accept_lifetime, cred_usage);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "inquiring credential info from mech", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         } else {
             tv.append("Credential Principal Name: " 
-                    + name.getExternal_name().getValue() + "\n");
+                      + name.getExternal_name().getValue() + "\n");
             tv.append("Credential Valid for Initiating Contexts for " 
-                    + init_lifetime[0] + " seconds\n");
+                      + init_lifetime[0] + " seconds\n");
             tv.append("Credential Valid for Accepting Contexts for " 
-                    + accept_lifetime[0] + " seconds\n");
+                      + accept_lifetime[0] + " seconds\n");
             tv.append("Credential Usage: " + cred_usage[0] + "\n");
         }
 
@@ -1075,7 +1074,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 context, 0, prf_in, 19, prf_out);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "testing gss_pseudo_random function", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
@@ -1092,7 +1091,7 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
                 mechs);
         if (maj_status != GSS_S_COMPLETE) {
             Util.displayError(tv, "gss_indicate_mechs_by_attrs", 
-                    min_status, maj_status);
+                              min_status, maj_status);
             return -1;
         }
 
