@@ -290,13 +290,13 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
        
         File file = new File(keytabPath);
 
-//        if(file.exists())
-//        {
-//            tv = (TextView) findViewById(R.id.password_label);
-//            tv.setVisibility(View.INVISIBLE);
-//            EditText passwordField = (EditText) findViewById(R.id.password);
-//            passwordField.setVisibility(View.INVISIBLE);
-//        }
+        if(file.exists())
+        {
+            tv = (TextView) findViewById(R.id.password_label);
+            tv.setVisibility(View.INVISIBLE);
+            EditText passwordField = (EditText) findViewById(R.id.password);
+            passwordField.setVisibility(View.INVISIBLE);
+        }
         
     }
     
