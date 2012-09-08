@@ -596,9 +596,90 @@ kinit_prompter(
     krb5_prompt prompts[]
 )
 {
-    krb5_error_code rc =
-        krb5_prompter_posix(ctx, data, name, banner, num_prompts, prompts);
+#ifndef ANDROID
+    krb5_error_code rc = krb5_prompter_posix(ctx, data, name, banner,
+            num_prompts, prompts);
     return rc;
+#else
+    //ref: http://www.iam.ubc.ca/guides/javatut99/native1.1/implementing/method.html
+    //ref: http://stackoverflow.com/questions/992836/how-to-access-the-java-method-in-a-c-application
+    //ref: http://docs.oracle.com/javase/1.4.2/docs/guide/jni/spec/functions.html#wp9502
+    //ref: http://java.sun.com/docs/books/jni/html/objtypes.html#4013
+
+    jstring name_string;
+    jstring banner_string;
+    jstring prompt_text;
+    jboolean is_hidden;
+
+    jobjectArray prompt_array;
+    jclass prompt_class;
+    jmethodID prompt_constructor_id;
+    jobject prompt;
+
+    jclass calling_class;
+    jmethodID prompter_method_id;
+
+    jobjectArray result_array;
+    jstring result;
+    const char * native_result;
+
+    int i;
+
+    name_string = (*jni_env)->NewStringUTF(jni_env, name);
+    banner_string = (*jni_env)->NewStringUTF(jni_env, banner);
+
+    prompt_class = (*jni_env)->FindClass(jni_env, "edu/mit/kerberos/Prompt");
+    prompt_constructor_id = (*jni_env)->GetMethodID(jni_env, prompt_class, "<init>", "(Ljava/lang/String;Z)V");
+    prompt_array = (*jni_env)->NewObjectArray(jni_env, num_prompts, prompt_class, NULL);
+
+    for(i = 0; i < num_prompts; i++)
+    {
+        prompt_text = (*jni_env)->NewStringUTF(jni_env, prompts[i].prompt);
+        is_hidden = (jboolean)prompts[i].hidden;
+
+        prompt = (*jni_env)->NewObject(jni_env, prompt_class, prompt_constructor_id, prompt_text, is_hidden);
+        (*jni_env)->SetObjectArrayElement(jni_env, prompt_array, i, prompt);
+    }
+
+    calling_class = (*jni_env)->GetObjectClass(jni_env, class_obj);
+    prompter_method_id =
+    (*jni_env)->GetMethodID(jni_env, calling_class, "kinitPrompter",
+            "(Ljava/lang/String;Ljava/lang/String;[Ledu/mit/kerberos/Prompt;)[Ljava/lang/String;");
+
+    //make the call
+    result_array = (*jni_env)->CallObjectMethod(jni_env, class_obj, prompter_method_id,
+            name_string, banner_string, prompt_array);
+
+    if (result_array == NULL)
+    return KRB5_LIBOS_CANTREADPWD;
+
+    for(i = 0; i < num_prompts; i++)
+    {
+        result = (jstring)(*jni_env)->GetObjectArrayElement(jni_env, result_array, i);
+
+        if (result == NULL)
+        {
+            log("Null result from Java prompter at index %i", i);
+            return KRB5_LIBOS_CANTREADPWD;
+        }
+
+        native_result = (*jni_env)->GetStringUTFChars(jni_env, result, NULL);
+
+        if (native_result == NULL)
+        {
+            log("Null result getting native representation of index %i", i);
+            return KRB5_LIBOS_CANTREADPWD;
+        }
+
+        //construct result
+        snprintf(prompts[i].reply->data, prompts[i].reply->length, "%s", native_result);
+        prompts[i].reply->length = strlen(native_result);
+
+        //snprintf duplicates the string, so it is safe to release here
+        (*jni_env)->ReleaseStringUTFChars(jni_env, result, native_result);
+    }
+    return 0;
+#endif
 }
 
 static int

@@ -44,18 +44,22 @@ package edu.mit.kerberos;
  *          d) Perform misc. GSSAPI function tests
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.util.Log;
-import edu.mit.kerberos.*;
-import java.io.*;
-import java.net.*;
 
 public class KerberosAppActivity extends Activity implements gsswrapperConstants
 {
@@ -75,6 +79,8 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
     static String serviceName = "service@myhost.local";
     static int uid;
 
+    static Boolean passwordAuthentication = false;
+    
     /**
 	 * Button listener for kinit ("Get Ticket") button.
 	 */
@@ -89,11 +95,23 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 			
 			/* Clear TextView */
 			tv.setText("");
+
+            EditText passwordField = (EditText) findViewById(R.id.password);
 			
-	        String argString = "-V -c /data/local/kerberos/ccache/krb5cc_" + 
-                uid + " -k -t /data/local/kerberos/krb5.keytab " + prinValue;
+            String argString;
+			if(passwordField.getVisibility() == View.INVISIBLE)
+			{
+	            argString = "-V -c /data/local/kerberos/ccache/krb5cc_"
+	                    + uid + " -k -t /data/local/kerberos/krb5.keytab " + prinValue;
+			}
+			else
+			{
+    			argString = "-V -c /data/local/kerberos/ccache/krb5cc_"
+    					+ uid + " " + prinValue;
+			}
 	                
-	        int t = nativeKinit(argString, countWords(argString));
+	        int t = nativeKinit(argString, countWords(argString));        
+	        
 	        Log.i("---JAVA JNI---", "Return value from native lib: " + t);
 	        	        
 	        if(t == 0) {
@@ -103,6 +121,26 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 	        	tv.append("Failed to get Ticket!\n");   
 		}
 	};
+	
+	private String[] kinitPrompter(String name, String banner,
+			final Prompt[] prompts)
+	{
+		final String[] results = new String[prompts.length];
+
+		// blithely ignore prompts and multi-prompt scenarios, which a Real
+		// Implementation would need to handle.
+		if (prompts.length > 1)
+		{
+			appendText("ERROR: Multi-prompt support not implemented!");
+			return results;
+		}
+
+		EditText editText = (EditText) findViewById(R.id.password);
+		results[0] = editText.getText().toString();
+
+		return results;
+	}
+
 	
 	/**
 	 * Button listener for klist ("List Ticket") button.
@@ -247,6 +285,19 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
         } else {
             tv.append("Failed to set KRB5CCNAME path correctly\n");
         }
+        
+        String keytabPath = "/data/local/kerberos/krb5.keytab";
+       
+        File file = new File(keytabPath);
+
+        if(file.exists())
+        {
+            tv = (TextView) findViewById(R.id.password_label);
+            tv.setVisibility(View.INVISIBLE);
+            EditText passwordField = (EditText) findViewById(R.id.password);
+            passwordField.setVisibility(View.INVISIBLE);
+        }
+        
     }
     
     /**
