@@ -9,6 +9,8 @@
     <EditText android:id="@+id/editText1" android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_marginLeft="5px" android:layout_marginRight="5px">
         <requestFocus></requestFocus>
     </EditText>
+    <TextView android:id="@+id/password_label" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginTop="10px" android:paddingLeft="5px" android:layout_marginBottom="10px" android:text="Enter Password:" android:textSize="6pt"></TextView>
+    <EditText android:id="@+id/password" android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_marginLeft="5px" android:layout_marginRight="5px"></EditText>        
     <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Defaults:" android:textSize="5pt" android:id="@+id/textView2" android:textAppearance="?android:attr/textAppearanceSmall" android:paddingLeft="5px" android:textStyle="bold"></TextView>
     <TextView android:id="@+id/textView3" android:textAppearance="?android:attr/textAppearanceSmall" android:text="conf file: /data/local/kerberos/krb5.conf" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="5px" android:textSize="4.5pt"></TextView>
     <TextView android:id="@+id/textView4" android:textAppearance="?android:attr/textAppearanceSmall" android:text="keytab file: /data/local/kerberos/krb5.keytab" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="5px" android:textSize="4.5pt"></TextView>
