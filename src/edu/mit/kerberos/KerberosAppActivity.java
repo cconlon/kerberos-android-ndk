@@ -77,8 +77,8 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
     /* Server Information for Client Application */    
     static int port = 11115;
     static String server = "10.211.55.6";
-    static String clientName = "chrisc";
-    static String serviceName = "service@ubuntu.local";
+    static String clientName = "myuser";
+    static String serviceName = "service@myhost.local";
     static int uid;
 
     /**
