@@ -601,6 +601,7 @@ kinit_prompter(
             num_prompts, prompts);
     return rc;
 #else
+    // Credit: Caleb Callaway
     //ref: http://www.iam.ubc.ca/guides/javatut99/native1.1/implementing/method.html
     //ref: http://stackoverflow.com/questions/992836/how-to-access-the-java-method-in-a-c-application
     //ref: http://docs.oracle.com/javase/1.4.2/docs/guide/jni/spec/functions.html#wp9502
@@ -629,15 +630,18 @@ kinit_prompter(
     banner_string = (*jni_env)->NewStringUTF(jni_env, banner);
 
     prompt_class = (*jni_env)->FindClass(jni_env, "edu/mit/kerberos/Prompt");
-    prompt_constructor_id = (*jni_env)->GetMethodID(jni_env, prompt_class, "<init>", "(Ljava/lang/String;Z)V");
-    prompt_array = (*jni_env)->NewObjectArray(jni_env, num_prompts, prompt_class, NULL);
+    prompt_constructor_id = (*jni_env)->GetMethodID(jni_env, 
+            prompt_class, "<init>", "(Ljava/lang/String;Z)V");
+    prompt_array = (*jni_env)->NewObjectArray(jni_env, 
+            num_prompts, prompt_class, NULL);
 
     for(i = 0; i < num_prompts; i++)
     {
         prompt_text = (*jni_env)->NewStringUTF(jni_env, prompts[i].prompt);
         is_hidden = (jboolean)prompts[i].hidden;
 
-        prompt = (*jni_env)->NewObject(jni_env, prompt_class, prompt_constructor_id, prompt_text, is_hidden);
+        prompt = (*jni_env)->NewObject(jni_env, prompt_class, 
+                prompt_constructor_id, prompt_text, is_hidden);
         (*jni_env)->SetObjectArrayElement(jni_env, prompt_array, i, prompt);
     }
 
@@ -646,16 +650,17 @@ kinit_prompter(
     (*jni_env)->GetMethodID(jni_env, calling_class, "kinitPrompter",
             "(Ljava/lang/String;Ljava/lang/String;[Ledu/mit/kerberos/Prompt;)[Ljava/lang/String;");
 
-    //make the call
-    result_array = (*jni_env)->CallObjectMethod(jni_env, class_obj, prompter_method_id,
-            name_string, banner_string, prompt_array);
+    // make the call
+    result_array = (*jni_env)->CallObjectMethod(jni_env, class_obj, 
+            prompter_method_id, name_string, banner_string, prompt_array);
 
     if (result_array == NULL)
     return KRB5_LIBOS_CANTREADPWD;
 
     for(i = 0; i < num_prompts; i++)
     {
-        result = (jstring)(*jni_env)->GetObjectArrayElement(jni_env, result_array, i);
+        result = (jstring)(*jni_env)->GetObjectArrayElement(jni_env, 
+                result_array, i);
 
         if (result == NULL)
         {
@@ -671,15 +676,19 @@ kinit_prompter(
             return KRB5_LIBOS_CANTREADPWD;
         }
 
-        //construct result
-        snprintf(prompts[i].reply->data, prompts[i].reply->length, "%s", native_result);
+        // construct result
+        snprintf(prompts[i].reply->data, prompts[i].reply->length, "%s", 
+                native_result);
         prompts[i].reply->length = strlen(native_result);
 
-        //snprintf duplicates the string, so it is safe to release here
+        // snprintf duplicates the string, so it is safe to release here
         (*jni_env)->ReleaseStringUTFChars(jni_env, result, native_result);
     }
+
     return 0;
-#endif
+
+#endif /* ANDROID */
+
 }
 
 static int

@@ -60,6 +60,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.RadioGroup;
+import android.widget.RadioButton;
 
 public class KerberosAppActivity extends Activity implements gsswrapperConstants
 {
@@ -75,12 +77,10 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
     /* Server Information for Client Application */    
     static int port = 11115;
     static String server = "10.211.55.6";
-    static String clientName = "myuser";
-    static String serviceName = "service@myhost.local";
+    static String clientName = "chrisc";
+    static String serviceName = "service@ubuntu.local";
     static int uid;
 
-    static Boolean passwordAuthentication = false;
-    
     /**
 	 * Button listener for kinit ("Get Ticket") button.
 	 */
@@ -91,15 +91,15 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 			TextView tv = (TextView) findViewById(R.id.textView);
 			EditText principal = (EditText) findViewById(R.id.editText1);
 			String prinValue = principal.getText().toString();
+            String argString;
             int ret = 0;
 			
 			/* Clear TextView */
 			tv.setText("");
 
-            EditText passwordField = (EditText) findViewById(R.id.password);
+            RadioButton authPass = (RadioButton) findViewById(R.id.radio_password);
 			
-            String argString;
-			if(passwordField.getVisibility() == View.INVISIBLE)
+            if (!authPass.isChecked())
 			{
 	            argString = "-V -c /data/local/kerberos/ccache/krb5cc_"
 	                    + uid + " -k -t /data/local/kerberos/krb5.keytab " + prinValue;
@@ -127,8 +127,8 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
 	{
 		final String[] results = new String[prompts.length];
 
-		// blithely ignore prompts and multi-prompt scenarios, which a Real
-		// Implementation would need to handle.
+		/* Ignore prompts and multi-prompt scenarios, which a real
+		   implementation would need to handle. */
 		if (prompts.length > 1)
 		{
 			appendText("ERROR: Multi-prompt support not implemented!");
@@ -273,6 +273,34 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
         btnKdestroy.setOnClickListener(kdestroyButtonListener);
         btnKvno.setOnClickListener(kvnoButtonListener);
         startButton.setOnClickListener(clientAppButtonListener);
+
+        // Capture some text fields (to toggle visibility)
+        final TextView tvPasswordLbl = (TextView) findViewById(R.id.password_label);
+        final TextView tvKeytabLbl = (TextView) findViewById(R.id.keytab_label);
+        final EditText etPassword = (EditText) findViewById(R.id.password);
+
+        tvKeytabLbl.setVisibility(View.GONE);
+
+        // Register our RadioGroup onChecked listener
+        RadioGroup authChoice = (RadioGroup) findViewById(R.id.authGroup);
+        authChoice.setOnCheckedChangeListener(
+            new RadioGroup.OnCheckedChangeListener() {
+                
+            public void onCheckedChanged(RadioGroup group, int checkedVal) {
+                switch(checkedVal) {
+                    case R.id.radio_password:
+                        tvPasswordLbl.setVisibility(View.VISIBLE);
+                        etPassword.setVisibility(View.VISIBLE);
+                        tvKeytabLbl.setVisibility(View.GONE);
+                        break;
+                    case R.id.radio_keytab:
+                        tvPasswordLbl.setVisibility(View.GONE);
+                        etPassword.setVisibility(View.GONE);
+                        tvKeytabLbl.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        });
         
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setMovementMethod(new ScrollingMovementMethod());
@@ -284,18 +312,6 @@ public class KerberosAppActivity extends Activity implements gsswrapperConstants
             tv.append("Successfully set KRB5CCNAME path\n");
         } else {
             tv.append("Failed to set KRB5CCNAME path correctly\n");
-        }
-        
-        String keytabPath = "/data/local/kerberos/krb5.keytab";
-       
-        File file = new File(keytabPath);
-
-        if(file.exists())
-        {
-            tv = (TextView) findViewById(R.id.password_label);
-            tv.setVisibility(View.INVISIBLE);
-            EditText passwordField = (EditText) findViewById(R.id.password);
-            passwordField.setVisibility(View.INVISIBLE);
         }
         
     }

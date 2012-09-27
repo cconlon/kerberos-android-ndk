@@ -1,33 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent" android:orientation="vertical" android:weightSum="1">
-    <TextView android:id="@+id/textView1" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginTop="10px" android:paddingLeft="5px" android:layout_marginBottom="10px" android:text="Enter Principal Name:" android:textSize="6pt"></TextView>
-    <EditText android:id="@+id/editText1" android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_marginLeft="5px" android:layout_marginRight="5px">
+    android:layout_height="wrap_content" >
+
+<LinearLayout android:id="@+id/linearLayout1"
+    android:layout_height="wrap_content" 
+    android:layout_width="match_parent" 
+    android:orientation="vertical" 
+    android:weightSum="1">
+
+    <!-- Enter your principal name -->
+    <TextView android:id="@+id/textView1"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:layout_height="wrap_content" 
+        android:layout_width="wrap_content" 
+        android:layout_marginTop="10px" 
+        android:paddingLeft="5px" 
+        android:layout_marginBottom="10px"
+        android:text="Enter Principal Name:"
+        android:textSize="6pt" >
+    </TextView>
+    <EditText android:id="@+id/editText1" 
+        android:layout_height="wrap_content" 
+        android:layout_width="match_parent" 
+        android:layout_marginLeft="5px" 
+        android:layout_marginRight="5px" >
         <requestFocus></requestFocus>
     </EditText>
-    <TextView android:id="@+id/password_label" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginTop="10px" android:paddingLeft="5px" android:layout_marginBottom="10px" android:text="Enter Password:" android:textSize="6pt"></TextView>
-    <EditText android:id="@+id/password" android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_marginLeft="5px" android:layout_marginRight="5px"></EditText>        
-    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Defaults:" android:textSize="5pt" android:id="@+id/textView2" android:textAppearance="?android:attr/textAppearanceSmall" android:paddingLeft="5px" android:textStyle="bold"></TextView>
-    <TextView android:id="@+id/textView3" android:textAppearance="?android:attr/textAppearanceSmall" android:text="conf file: /data/local/kerberos/krb5.conf" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="5px" android:textSize="4.5pt"></TextView>
-    <TextView android:id="@+id/textView4" android:textAppearance="?android:attr/textAppearanceSmall" android:text="keytab file: /data/local/kerberos/krb5.keytab" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="5px" android:textSize="4.5pt"></TextView>
-    <TextView android:id="@+id/textView5" android:textAppearance="?android:attr/textAppearanceSmall" android:text="ccache: /data/local/kerberos/ccache/krb5cc_[uid]" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="5px" android:textSize="4.5pt"></TextView>
-    <TextView android:id="@+id/textView6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="4.5pt" android:paddingLeft="5px" android:text="Server settings: KerberosAppActivity.java"></TextView>
-    <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout2" android:layout_width="match_parent" android:weightSum="1">
-        <Button android:id="@+id/button1" android:layout_marginTop="10px" android:layout_marginLeft="5px" android:text="kinit" android:layout_height="32dp" android:layout_width="120px" android:textSize="5pt"></Button>
-        <Button android:layout_marginTop="10px" android:id="@+id/btnList" android:text="klist" android:layout_height="32dp" android:layout_width="100px" android:layout_weight="0.47" android:textSize="5pt"></Button>
-        <Button android:text="kvno" android:layout_marginTop="10px" android:id="@+id/btnVno" android:layout_height="32dp" android:layout_width="100px" android:layout_weight="0.45" android:textSize="5pt"></Button>
-        <Button android:layout_marginTop="10px" android:id="@+id/btnDestroy" android:text="kdestroy" android:layout_height="32dp" android:layout_width="wrap_content" android:textSize="5pt"></Button>
+
+    <!-- Password / keytab entry -->
+    <LinearLayout android:id="@+id/toggleLayout"
+        android:layout_height="wrap_content" 
+        android:layout_width="match_parent" >
+        <TextView android:id="@+id/toggleText"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20px"
+            android:paddingLeft="5px" 
+            android:layout_marginBottom="10px"
+            android:text="AUTH Method:"
+            android:textSize="6pt" >
+        </TextView>
+        <RadioGroup android:id="@+id/authGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/radio_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dip"
+                android:checked="true"
+                android:text="Password" />
+            <RadioButton android:id="@+id/radio_keytab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dip"
+                android:text="Keytab" />
+        </RadioGroup>
     </LinearLayout>
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayout3" android:orientation="vertical">
-        <Button android:text="Start Client App" android:layout_height="match_parent" android:layout_marginBottom="5px" android:layout_marginLeft="4px" android:layout_width="315dp" android:textStyle="bold" android:id="@+id/startButton"></Button>
+    <TextView android:id="@+id/password_label" 
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="0px"
+        android:paddingLeft="5px"
+        android:layout_marginBottom="10px"
+        android:text="Enter Password:"
+        android:textSize="6pt" >
+    </TextView>
+    <EditText android:id="@+id/password"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="5px"
+        android:layout_marginRight="5px"
+        android:password="true" >
+    </EditText>
+    <TextView android:id="@+id/keytab_label"
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+        android:text="keytab file: /data/local/kerberos/krb5.keytab"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingLeft="5px"
+        android:layout_marginTop="0px"
+        android:layout_marginBottom="10px"
+        android:textSize="4.5pt" >
+    </TextView>
+    <View android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_marginTop="15px"
+        android:layout_marginBottom="10px"
+        android:background="#CCCCCC" />
+
+    <!-- list default file locations -->
+    <TextView android:id="@+id/textView2"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Defaults:"
+        android:textSize="5pt"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:paddingLeft="5px" 
+        android:textStyle="bold" >
+    </TextView>
+    <TextView android:id="@+id/textView3"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="conf file: /data/local/kerberos/krb5.conf"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingLeft="5px"
+        android:textSize="4.5pt" >
+    </TextView>
+    <TextView android:id="@+id/textView5"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="ccache: /data/local/kerberos/ccache/krb5cc_[uid]"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingLeft="5px"
+        android:textSize="4.5pt" >
+    </TextView>
+    <TextView android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="4.5pt"
+        android:paddingLeft="5px"
+        android:text="Server settings: KerberosAppActivity.java" >
+    </TextView>
+
+    <!-- first row of buttons (kinit, klist, kvno, kdestroy -->
+    <LinearLayout android:id="@+id/linearLayout2" 
+        android:layout_height="wrap_content" 
+        android:layout_width="match_parent" 
+        android:weightSum="1" >
+            <Button android:id="@+id/button1"
+                android:layout_marginTop="10px"
+                android:layout_marginLeft="5px"
+                android:text="kinit"
+                android:layout_height="32dp"
+                android:layout_width="120px"
+                android:textSize="5pt" >
+            </Button>
+            <Button android:id="@+id/btnList"
+                android:layout_marginTop="10px"
+                android:text="klist"
+                android:layout_height="32dp"
+                android:layout_width="100px"
+                android:layout_weight="0.47"
+                android:textSize="5pt" >
+            </Button>
+            <Button android:id="@+id/btnVno"
+                android:text="kvno"
+                android:layout_marginTop="10px" 
+                android:layout_height="32dp" 
+                android:layout_width="100px"
+                android:layout_weight="0.45"
+                android:textSize="5pt" >
+            </Button>
+            <Button android:id="@+id/btnDestroy"
+                android:layout_marginTop="10px"
+                android:text="kdestroy" 
+                android:layout_height="32dp"
+                android:layout_width="wrap_content" 
+                android:textSize="5pt" >
+            </Button>
     </LinearLayout>
-    <FrameLayout android:id="@+id/frameLayout1" android:layout_width="match_parent" android:background="#cccccc" android:paddingTop="10px" android:paddingLeft="5px" android:layout_marginLeft="10px" android:layout_marginRight="10px" android:layout_height="234dp">
-    <TextView android:id="@+id/textView" android:text="" android:layout_height="wrap_content" android:layout_width="fill_parent" android:textColor="#000" android:scrollbars="vertical" android:textSize="2pt"></TextView>
+
+    <!-- second button row (Start Client App) -->
+    <LinearLayout android:id="@+id/linearLayout3" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:orientation="vertical" >
+            <Button android:id="@+id/startButton"
+                android:text="Start Client App" 
+                android:layout_height="match_parent" 
+                android:layout_marginBottom="5px" 
+                android:layout_marginLeft="4px"
+                android:layout_width="315dp"
+                android:textStyle="bold" >
+            </Button>
+    </LinearLayout>
+
+    <!-- output text box -->
+    <FrameLayout android:id="@+id/frameLayout1" 
+        android:layout_width="match_parent" 
+        android:background="#cccccc" 
+        android:paddingTop="10px" 
+        android:paddingLeft="5px" 
+        android:layout_marginLeft="10px" 
+        android:layout_marginRight="10px" 
+        android:layout_height="234dp" >
+        <TextView android:id="@+id/textView" 
+            android:text="" 
+            android:layout_height="wrap_content" 
+            android:layout_width="fill_parent" 
+            android:textColor="#000"
+            android:scrollbars="vertical" 
+            android:textSize="2pt" >
+        </TextView>
     </FrameLayout>
-</LinearLayout>
 
 </LinearLayout>
+
+</ScrollView>
