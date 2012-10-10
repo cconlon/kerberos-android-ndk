@@ -43,7 +43,7 @@ client, please update your client and server settings in
 ./src/edu/mit/kerberos/KerberosAppActivity.java before building the project.
 
 android update project -p . -s
-swig -java -package edu.mit.kerberos -outdir ./src/edu/mit/kerberos
+swig -java -package edu.mit.jgss.swig -outdir ./src/edu/mit/jgss/swig
      -o ./jni/gsswrapper_wrap.c ./jni/gsswrapper.i
 ndk-build
 ant debug
