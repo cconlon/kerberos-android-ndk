@@ -1,27 +1,42 @@
 /* -*- mode: c; c-basic-offset: 4; indent-tabs-mode: nil -*- */
-/* swig/gsswrapper.i - GSS-API SWIG Java Wrapper */
-/*
+/* gsswrapper.i - GSS-API SWIG Java wrapper interface file */
+/* 
  * Copyright (C) 2012 by the Massachusetts Institute of Technology.
  * All rights reserved.
  *
- * Export of this software from the United States of America may
- *   require a specific license from the United States Government.
- *   It is the responsibility of any person or organization contemplating
- *   export to obtain such a license before exporting.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
  *
- * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
- * distribute this software and its documentation for any purpose and
- * without fee is hereby granted, provided that the above copyright
- * notice appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation, and that
- * the name of M.I.T. not be used in advertising or publicity pertaining
- * to distribution of the software without specific, written prior
- * permission.  Furthermore if you modify this software you must label
- * your software as modified software and not distribute it in such a
- * fashion that it might be confused with the original M.I.T. software.
- * M.I.T. makes no representations about the suitability of
- * this software for any purpose.  It is provided "as is" without express
- * or implied warranty.
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in
+ *   the documentation and/or other materials provided with the
+ *   distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * Original source developed by yaSSL (http://www.yassl.com)
+ *
+ * This file is used by SWIG to generate the Java GSS-API SWIG wrapper,
+ * used to create the edu.mit.jgss.swig package, subsequently used in the
+ * MIT implementatio of RFC 5653 (package edu.mit.jgss).
+ *
  */
 
 %module gsswrapper
@@ -70,7 +85,7 @@
      * value by Java. Requires gss_buffer_desc as input.
      */
     JNIEXPORT jbyteArray JNICALL 
-    Java_edu_mit_kerberos_gsswrapperJNI_getDescArray(JNIEnv *jenv, 
+    Java_edu_mit_jgss_swig_gsswrapperJNI_getDescArray(JNIEnv *jenv, 
             jclass jcls, jlong jarg1, jobject jarg1_) 
     {
         jbyteArray newArray = 0 ;
@@ -93,7 +108,7 @@
      * gss_buffer_t object using a Java byte[] as input.
      */
     JNIEXPORT jint JNICALL 
-    Java_edu_mit_kerberos_gsswrapperJNI_setDescArray(JNIEnv *jenv, jclass jcls,
+    Java_edu_mit_jgss_swig_gsswrapperJNI_setDescArray(JNIEnv *jenv, jclass jcls,
             jlong jarg1, jobject jarg1_, jbyteArray jarg2) 
     {
         jint jresult = 0 ;
@@ -169,7 +184,7 @@ custom Java code
         try {
             System.loadLibrary("kerberosapp");
         } catch(UnsatisfiedLinkError e) {
-            System.err.println("Unable to load kerberosapp. " + 
+            System.err.println("Unable to load libkerberosapp. " + 
                     "Check LD_LIBRARY_PATH environment variable.\n" + e);
             System.exit(1);
         }
@@ -318,6 +333,47 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     return $jnicall;
 }
 
+/*
+ * TYPEMAP: (char * BYTE, int LENGTH) (native) <--> byte[] (Java)
+ * --------------------------------------------------------------
+ *
+ */
+/*%typemap(in) (char * BYTE, int LENGTH) {
+    $1 = (char *) JCALL2(GetByteArrayElements, jenv, $input, 0);
+    $2 = (int)    JCALL1(GetArrayLength, jenv, $input);
+}
+%typemap(jni) (char * BYTE, int LENGTH) "jbyteArray"
+%typemap(jtype) (char * BYTE, int LENGTH) "byte[]"
+%typemap(jstype) (char * BYTE, int LENGTH) "byte[]"
+%typemap(javain) (char * BYTE, int LENGTH) "$javainput"
+%apply (char * BYTE, int LENGTH) { (char * byteArray, long len) };*/
+%typemap(in) (char * BYTE, int LENGTH) {
+    $1 = NULL;
+    $2 = 0;
+    if ($input != NULL) {
+        /* Get our Java byte array as a char * */
+        jboolean isCopy;
+        const char* nativeArray = (char*) (*jenv)->GetByteArrayElements(jenv, $input, &isCopy);
+
+        /* Get the length of our byte array */
+        $2 = (*jenv)->GetArrayLength(jenv, $input);
+
+        /* Copy char* and give it back to Java GSS-API */
+        $1 = (char *) malloc($2);
+        strcpy($1, nativeArray);
+
+        /* Release the Java byte[] */
+        if (isCopy) {
+            (*jenv)->ReleaseByteArrayElements(jenv, $input, nativeArray, JNI_ABORT);
+        }
+    }
+}
+%typemap(jni) (char * BYTE, int LENGTH) "jbyteArray"
+%typemap(jtype) (char * BYTE, int LENGTH) "byte[]"
+%typemap(jstype) (char * BYTE, int LENGTH) "byte[]"
+%typemap(javain) (char * BYTE, int LENGTH) "$javainput"
+%apply (char * BYTE, int LENGTH) { (char * byteArray, long len) };
+
 /* 
  * TYPEMAP:  gss_OID_set * (native) <-->  gss_OID_set_desc (Java)
  * --------------------------------------------------------------
@@ -331,7 +387,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert Java gss_OID_set_desc *to C gss_OID_set * */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_OID_set_desc");
+                "edu/mit/jgss/swig/gss_OID_set_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = (*jenv)->GetLongField(jenv, $input, fid);
 
@@ -345,7 +401,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     if ($input != NULL) {
         /* Copy back temporary struct to gss_OID_set_desc Java class */
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_OID_set_desc");
+                "edu/mit/jgss/swig/gss_OID_set_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -367,7 +423,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert incoming Java gss_OID_desc to a native gss_OID pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_OID_desc");
+                "edu/mit/jgss/swig/gss_OID_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         
         /* Get pointer to gss_OID_desc */
@@ -381,7 +437,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert outgoing native gss_OID * to Java gss_OID_desc (gss_OID **) */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_OID_desc");
+                "edu/mit/jgss/swig/gss_OID_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -389,6 +445,12 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     }
 }
 %typemap(javain) gss_OID * "$javainput"
+%typemap(javacode) gss_OID_desc %{
+   public int hashCode() {
+       return (int)swigCPtr;
+   }
+%}
+
 
 /* 
  * TYPEMAP:  gss_ctx_id_t * (native) <--> gss_ctx_id_t_desc (Java)
@@ -404,7 +466,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
        gss_ctx_id_t pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_ctx_id_t_desc");
+                "edu/mit/jgss/swig/gss_ctx_id_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
 
         /* Get pointer to gss_ctx_id_t_desc */
@@ -418,7 +480,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert outgoing native gss_ctx_id_t * to Java gss_ctx_id_t_desc */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_ctx_id_t_desc");
+                "edu/mit/jgss/swig/gss_ctx_id_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -441,7 +503,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
        gss_cred_id_t pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_cred_id_t_desc");
+                "edu/mit/jgss/swig/gss_cred_id_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         
         /* Get pointer to gss_cred_id_t_desc */
@@ -455,7 +517,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert outgoing native gss_cred_id_t * to Java gss_cred_id_t_desc */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_cred_id_t_desc");
+                "edu/mit/jgss/swig/gss_cred_id_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -482,7 +544,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
        native gss_channel_bindings_t pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_channel_bindings_struct");
+                "edu/mit/jgss/swig/gss_channel_bindings_struct");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
 
         /* Get pointer to gss_channel_bindings_struct */
@@ -497,7 +559,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
        Java gss_channel_bindings_struct */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_channel_bindings_struct");
+                "edu/mit/jgss/swig/gss_channel_bindings_struct");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -522,7 +584,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert incoming Java gss_name_t_desc to a native gss_name_t pointer */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_name_t_desc");
+                "edu/mit/jgss/swig/gss_name_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         
         /* Get pointer to gss_name_t_desc */
@@ -536,7 +598,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
     /* Convert outgoing native gss_name_t * to Java gss_name_t_desc */
     if ($input != NULL) {
         jclass clazz = (*jenv)->FindClass(jenv, 
-                "edu/mit/kerberos/gss_name_t_desc");
+                "edu/mit/jgss/swig/gss_name_t_desc");
         jfieldID fid = (*jenv)->GetFieldID(jenv, clazz, "swigCPtr", "J");
         jlong cPtr = 0;
         cPtr = (long) *$1;
@@ -1442,6 +1504,25 @@ struct extensions
         gs->length = strlen(gs->value);
         return gs;
     }
+    
+    /* 
+     */
+    char * toString() {
+        OM_uint32 maj_status, min_status, msg_ctx;
+        char* outputStr;
+        maj_status = 0;
+        min_status = 0;
+        msg_ctx = 0;
+        
+
+        if ($self) {
+            outputStr = malloc($self->length);
+            strcpy(outputStr, $self->value);
+            return outputStr;
+        } else {
+            return NULL;
+        }
+    }
 }
 
 %extend gss_OID_desc {
@@ -1459,8 +1540,26 @@ struct extensions
         input_string.value = value;
         input_string.length = strlen(input_string.value);
         maj_status = gss_str_to_oid(&min_status, &input_string, &newoid);
-        if (maj_status != GSS_S_COMPLETE)
+        if (maj_status != GSS_S_COMPLETE) {
             newoid = GSS_C_NO_OID;
+        }
+        return newoid;
+    }
+
+    gss_OID_desc(char * byteArray, long len) {
+        gss_OID_desc *newoid;
+        /*OM_uint32 maj_status, min_status;
+        int i;*/
+
+        newoid = (gss_OID_desc *) calloc (1, sizeof(gss_OID_desc));
+        newoid->length = len;
+        newoid->elements = byteArray;
+        /*fprintf(stderr, "newoid->length = %lu\n", (long) newoid->length);
+        fprintf(stderr, "newoid->elements = ");
+        for (i=0; i<len; i++) {
+            fprintf(stderr, "%X (%d) ", (char) byteArray[i], (int) byteArray[i]);
+        }
+        fprintf(stderr, "\n");*/
         return newoid;
     }
 
@@ -1481,9 +1580,100 @@ struct extensions
        } 
     }
 
+    /* 
+     * Returns a space delimited string with brackets, ie:
+     * "{ 1 2 ... 233 }"
+     */
+    char * toString() {
+        OM_uint32 maj_status, min_status, msg_ctx;
+        gss_buffer_t oidString;
+
+        maj_status = 0;
+        min_status = 0;
+        msg_ctx = 0;
+
+        oidString = malloc(sizeof(gss_buffer_t));
+
+        if ($self) {
+            /* Convert OID into string representation */
+            maj_status = gss_oid_to_str(&min_status, $self, oidString);
+
+            if (maj_status == GSS_S_COMPLETE) {
+                return ((char *) oidString->value);
+            } else {
+                maj_status = gss_release_buffer(&min_status, oidString);
+                return NULL;
+            }
+        } else {
+            return NULL;
+        }
+    }
+
+    /*
+     * Returns a dot delimited string representation of the OID, ie:
+     * "1.2. ... .233"
+     */
+    char * toDotString() {
+        OM_uint32 maj_status, min_status, msg_ctx;
+        gss_buffer_t oidString;
+        char *newString;
+        int elements = 0;
+        int i = 0;
+        int j = 0;
+
+        maj_status = 0;
+        min_status = 0;
+        msg_ctx = 0;
+
+        oidString = malloc(sizeof(gss_buffer_t));
+
+        if ($self) {
+
+            /* convert OID into native string representation "{1 2 ... 2}" */
+            maj_status = gss_oid_to_str(&min_status, $self, oidString);
+
+            if (maj_status != GSS_S_COMPLETE) {
+                maj_status = gss_release_buffer(&min_status, oidString);
+                return NULL;
+            }
+
+            /* determine correct length of new string */
+            for (i = 0; ((char*)oidString->value)[i] != '\0'; i++) {
+                if (((char*)oidString->value)[i] != '{' &&
+                    ((char*)oidString->value)[i] != '}') {
+                    elements++;
+                }
+            }
+
+            newString = malloc(elements + 1);
+
+            /* create new dot-separated string */
+            for (i = 0; ((char*)oidString->value)[i] != '\0'; i++) {
+                if (((char*)oidString->value)[i] != ' ' &&
+                    ((char*)oidString->value)[i] != '{' &&
+                    ((char*)oidString->value)[i] != '}') {
+                    newString[j] = ((char*)oidString->value)[i];
+                    j++;
+                } else if (((char*)oidString->value)[i] == ' ' &&
+                           ((char*)oidString->value)[i-1] != '{' &&
+                           ((char*)oidString->value)[i+1] != '}') {
+                    newString[j] = '.';
+                    j++;
+                }
+            }
+            newString[j] = '\0';
+            return newString;
+
+        } else {
+            return NULL;
+        }
+    }
+
+    /* keep the java virtual machine from freeing gss_OID_desc memory.
+       If this isn't here, we get often get a segfault when running
+       client applications when Java tries to free memory it shouldn't. */
     ~gss_OID_desc() {
-        gss_OID_desc *oid = $self;
-        free(oid);
+        /*gss_OID_desc *oid = $self;*/
     }
 }
 

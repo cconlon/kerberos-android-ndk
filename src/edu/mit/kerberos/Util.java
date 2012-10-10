@@ -34,6 +34,8 @@ import android.widget.TextView;
 import java.io.*;
 import java.net.*;
 
+import edu.mit.jgss.swig.*;
+
 public class Util implements gsswrapperConstants{
     
     /*
