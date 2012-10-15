@@ -1,8 +1,5 @@
-package edu.mit.kerberos;
-
+/* KerberosAppActivity.java - Example Kerberos Android App */
 /*
- * KerberosAppActivity.java
- *
  * Copyright (C) 2012 by the Massachusetts Institute of Technology.
  * All rights reserved.
  *
@@ -43,6 +40,7 @@ package edu.mit.kerberos;
  *          c) Repeat step b) but using gss_seal / gss_verify
  *          d) Perform misc. GSSAPI function tests
  */
+package edu.mit.kerberos;
 
 import java.io.File;
 import java.io.IOException;

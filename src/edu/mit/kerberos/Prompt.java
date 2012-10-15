@@ -1,8 +1,5 @@
-package edu.mit.kerberos;
-
+/* Prompt.java - Prompt class for Kinit password functionality */
 /*
- * Prompt.java
- *
  * Copyright (C) 2012 by the Massachusetts Institute of Technology.
  * All rights reserved.
  *
@@ -29,6 +26,7 @@ package edu.mit.kerberos;
  * class contributed by Caleb Callaway to enable kinit password functionality.
  *
  */
+package edu.mit.kerberos;
 
 public class Prompt
 {

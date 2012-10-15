@@ -1,5 +1,3 @@
-package edu.mit.kerberos;
-
 /* Util.java - Example GSS-API Utility functions*/
 /* 
  * Copyright (C) 2012 by the Massachusetts Institute of Technology.
@@ -43,6 +41,8 @@ package edu.mit.kerberos;
  * like Util.java does.
  *
  */
+package edu.mit.kerberos;
+
 import android.widget.*;
 import java.io.*;
 import java.net.*;
