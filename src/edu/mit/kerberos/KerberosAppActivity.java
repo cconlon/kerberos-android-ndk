@@ -52,6 +52,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
+import android.app.TabActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -62,10 +63,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.RadioGroup;
 import android.widget.RadioButton;
+import android.widget.LinearLayout;
+import android.widget.TabHost;
 
 import org.ietf.jgss.*;
 
-public class KerberosAppActivity extends Activity
+public class KerberosAppActivity extends TabActivity
 {
     /* Native JNI function declarations */
     public native int nativeSetKRB5CCNAME(String path);
@@ -75,10 +78,10 @@ public class KerberosAppActivity extends Activity
 	public native int nativeKdestroy(String argv, int argc);
 
     /* Server Information for Client Application */    
-    private static int port = 11115;
-    private static String server = "10.211.55.6";
-    private static String serviceName = "service@host";
-    private static String clientPrincipal = "clientname";
+    private static int port                = 0;
+    private static String server           = null;
+    private static String servicePrincipal = null;
+    private static String clientPrincipal  = null;
     private static int uid;
 
     /* Global GSS-API objects */
@@ -94,6 +97,7 @@ public class KerberosAppActivity extends Activity
     private static OutputStream serverOut   = null;
     private static InputStream serverIn     = null;
 
+    /* Return values */
     private static int FAILURE = -1;
     private static int SUCCESS = 0;
 
@@ -115,8 +119,8 @@ public class KerberosAppActivity extends Activity
     {
 		public void onClick(View v) {
 			
-			TextView tv = (TextView) findViewById(R.id.textView);
-			EditText principal = (EditText) findViewById(R.id.editText1);
+			TextView tv = (TextView) findViewById(R.id.textViewClient);
+			EditText principal = (EditText) findViewById(R.id.etClientPrincipal);
 			String prinValue = principal.getText().toString();
             String argString;
             int ret = 0;
@@ -176,7 +180,7 @@ public class KerberosAppActivity extends Activity
     {
 		public void onClick(View v) {
 			
-			TextView tv = (TextView) findViewById(R.id.textView);
+			TextView tv = (TextView) findViewById(R.id.textViewClient);
 			int uid = android.os.Process.myUid();
 			
 			/* Clear TextView */
@@ -199,8 +203,8 @@ public class KerberosAppActivity extends Activity
     {
 		public void onClick(View v) {
 			
-			TextView tv = (TextView) findViewById(R.id.textView);
-			EditText principal = (EditText) findViewById(R.id.editText1);
+			TextView tv = (TextView) findViewById(R.id.textViewClient);
+			EditText principal = (EditText) findViewById(R.id.etClientPrincipal);
 			int uid = android.os.Process.myUid();
 			String prinValue = principal.getText().toString();
 			
@@ -225,7 +229,7 @@ public class KerberosAppActivity extends Activity
     {
 		public void onClick(View v) {
 			
-			TextView tv = (TextView) findViewById(R.id.textView);
+			TextView tv = (TextView) findViewById(R.id.textViewClient);
 			int uid = android.os.Process.myUid();
 			
 			/* Clear TextView */
@@ -248,11 +252,51 @@ public class KerberosAppActivity extends Activity
     {
 		public void onClick(View v) {
 			
-			TextView tv = (TextView) findViewById(R.id.textView);
+			TextView tv = (TextView) findViewById(R.id.textViewApp);
             int ret = 0;
-			
-			/* Clear TextView */
+
+            /* clear Client App TextView */
 			tv.setText("");
+		
+            /* set server info */    
+            EditText serverPrincipal = (EditText) findViewById(R.id.etServerPrincipal);
+            EditText serverIpAddress = (EditText) findViewById(R.id.etServerIpAddress);
+            EditText serverPort = (EditText) findViewById(R.id.etServerPort);
+			String serverP = serverPrincipal.getText().toString();
+			String serverIp = serverIpAddress.getText().toString();
+			String serverPt = serverPort.getText().toString();
+            if (serverP.matches("")) {
+                tv.append("You need to specify a server principal in tab 2.\n");
+                ret = 1;
+            } else {
+                servicePrincipal = serverP;
+            }
+            if (serverIp.matches("")) {
+                tv.append("You need to specify a server IP address in tab 2.\n");
+                ret = 1;
+            } else {
+                server = serverIp;
+            }
+            if (serverPt.matches("")) {
+                tv.append("You need to specifiy a server port number in tab 2.\n");
+                ret = 1;
+            } else {
+                port = Integer.valueOf(serverPt);
+            }
+
+            /* set client info */
+            EditText clientPrin = (EditText) findViewById(R.id.etClientPrincipal);
+            String clientP = clientPrin.getText().toString();
+            if (clientP.matches("")) {
+                tv.append("You need to specify a client principal in tab 1.\n");
+                ret = 1;
+            } else {
+                clientPrincipal = clientP;
+            }
+
+            /* if input is bad, exit early */
+            if (ret != 0)
+                return;
             
             try {
                 ret = startClient();
@@ -286,6 +330,24 @@ public class KerberosAppActivity extends Activity
         int ret = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        TabHost mTabHost = getTabHost();
+
+        mTabHost.addTab(mTabHost.newTabSpec("tab_test1")
+                .setIndicator("1. Client Info")
+                .setContent(R.id.tabview1));
+        mTabHost.addTab(mTabHost.newTabSpec("tab_test2")
+                .setIndicator("2. Server Info")
+                .setContent(R.id.tabview2));
+        mTabHost.addTab(mTabHost.newTabSpec("tab_test3")
+                .setIndicator("3. Client App")
+                .setContent(R.id.tabview3));
+
+        mTabHost.getTabWidget().getChildAt(0).getLayoutParams().height = 50;
+        mTabHost.getTabWidget().getChildAt(1).getLayoutParams().height = 50;
+        mTabHost.getTabWidget().getChildAt(2).getLayoutParams().height = 50;
+
+        mTabHost.setCurrentTab(0);
         
         // Capture our buttons from layout
         Button button = (Button) findViewById(R.id.button1);
@@ -293,7 +355,7 @@ public class KerberosAppActivity extends Activity
         Button btnKdestroy = (Button) findViewById(R.id.btnDestroy);
         Button btnKvno = (Button) findViewById(R.id.btnVno);
         Button startButton = (Button) findViewById(R.id.startButton);
-        
+                
         // Register our button onClick listeners
         button.setOnClickListener(mButtonListener);
         btnKlist.setOnClickListener(klistButtonListener);
@@ -329,16 +391,19 @@ public class KerberosAppActivity extends Activity
             }
         });
         
-        TextView tv = (TextView) findViewById(R.id.textView);
+        TextView tv = (TextView) findViewById(R.id.textViewApp);
         tv.setMovementMethod(new ScrollingMovementMethod());
         tv.setTextSize(11);
+        TextView tv2 = (TextView) findViewById(R.id.textViewClient);
+        tv2.setMovementMethod(new ScrollingMovementMethod());
+        tv2.setTextSize(11);
 	    
         uid = android.os.Process.myUid();
         ret = nativeSetKRB5CCNAME("/data/local/kerberos/ccache/krb5cc_" + uid);
         if (ret == 0) {
-            tv.append("Successfully set KRB5CCNAME path\n");
+            tv2.append("Successfully set KRB5CCNAME path\n");
         } else {
-            tv.append("Failed to set KRB5CCNAME path correctly\n");
+            tv2.append("Failed to set KRB5CCNAME path correctly\n");
         }
         
     }
@@ -357,7 +422,7 @@ public class KerberosAppActivity extends Activity
     private void callback(int test) 
     {
     	Log.i("---JAVA JNI---", "Callback from native function!");
-    	TextView tv = (TextView) findViewById(R.id.textView);
+    	TextView tv = (TextView) findViewById(R.id.textViewClient);
     	tv.append("From native, test = " + test + "\n");
     }
     
@@ -367,7 +432,7 @@ public class KerberosAppActivity extends Activity
      */
     private void appendText(String input) 
     {
-    	TextView tv = (TextView) findViewById(R.id.textView);
+    	TextView tv = (TextView) findViewById(R.id.textViewClient);
     	tv.append(input);
     }
 
@@ -376,7 +441,7 @@ public class KerberosAppActivity extends Activity
      */
     private int startClient() throws Exception
     {
-    	TextView tv = (TextView) findViewById(R.id.textView);
+    	TextView tv = (TextView) findViewById(R.id.textViewApp);
         
         int ret = 0;
         String serverMsg;
@@ -480,7 +545,7 @@ public class KerberosAppActivity extends Activity
         int err = 0;
 
         try {
-            GSSName peer = mgr.createName(serviceName,
+            GSSName peer = mgr.createName(servicePrincipal,
                     GSSName.NT_HOSTBASED_SERVICE);
 
             context = mgr.createContext(peer, mech, clientCred,
@@ -590,7 +655,6 @@ public class KerberosAppActivity extends Activity
             } else {
                 tv.append("Error sending message to server...\n");
             }
-
 
         } catch (GSSException e) {
             tv.append("GSS-API error in per-message calls: " +

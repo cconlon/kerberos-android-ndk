@@ -1,204 +1,292 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="fill_parent">
 
-<LinearLayout android:id="@+id/linearLayout1"
-    android:layout_height="wrap_content" 
-    android:layout_width="match_parent" 
-    android:orientation="vertical" 
-    android:weightSum="1">
+    <TabWidget android:id="@android:id/tabs"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
-    <!-- Enter your principal name -->
-    <TextView android:id="@+id/textView1"
-        android:textAppearance="?android:attr/textAppearanceMedium" 
-        android:layout_height="wrap_content" 
-        android:layout_width="wrap_content" 
-        android:layout_marginTop="10px" 
-        android:paddingLeft="5px" 
-        android:layout_marginBottom="10px"
-        android:text="Enter Principal Name:"
-        android:textSize="6pt" >
-    </TextView>
-    <EditText android:id="@+id/editText1" 
-        android:layout_height="wrap_content" 
-        android:layout_width="match_parent" 
-        android:layout_marginLeft="5px" 
-        android:layout_marginRight="5px" >
-        <requestFocus></requestFocus>
-    </EditText>
+    <FrameLayout android:id="@android:id/tabcontent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-    <!-- Password / keytab entry -->
-    <LinearLayout android:id="@+id/toggleLayout"
-        android:layout_height="wrap_content" 
-        android:layout_width="match_parent" >
-        <TextView android:id="@+id/toggleText"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="20px"
-            android:paddingLeft="5px" 
-            android:layout_marginBottom="10px"
-            android:text="AUTH Method:"
-            android:textSize="6pt" >
-        </TextView>
-        <RadioGroup android:id="@+id/authGroup"
+        <!-- FIRST TAB -->
+        <LinearLayout android:id="@+id/tabview1"
+            android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RadioButton android:id="@+id/radio_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12dip"
-                android:checked="true"
-                android:text="Password" />
-            <RadioButton android:id="@+id/radio_keytab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12dip"
-                android:text="Keytab" />
-        </RadioGroup>
-    </LinearLayout>
-    <TextView android:id="@+id/password_label" 
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="0px"
-        android:paddingLeft="5px"
-        android:layout_marginBottom="10px"
-        android:text="Enter Password:"
-        android:textSize="6pt" >
-    </TextView>
-    <EditText android:id="@+id/password"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginLeft="5px"
-        android:layout_marginRight="5px"
-        android:password="true" >
-    </EditText>
-    <TextView android:id="@+id/keytab_label"
-        android:textAppearance="?android:attr/textAppearanceSmall" 
-        android:text="keytab file: /data/local/kerberos/krb5.keytab"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:paddingLeft="5px"
-        android:layout_marginTop="0px"
-        android:layout_marginBottom="10px"
-        android:textSize="4.5pt" >
-    </TextView>
-    <View android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:layout_marginTop="15px"
-        android:layout_marginBottom="10px"
-        android:background="#CCCCCC" />
-
-    <!-- list default file locations -->
-    <TextView android:id="@+id/textView2"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Defaults:"
-        android:textSize="5pt"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:paddingLeft="5px" 
-        android:textStyle="bold" >
-    </TextView>
-    <TextView android:id="@+id/textView3"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="conf file: /data/local/kerberos/krb5.conf"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:paddingLeft="5px"
-        android:textSize="4.5pt" >
-    </TextView>
-    <TextView android:id="@+id/textView5"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="ccache: /data/local/kerberos/ccache/krb5cc_[uid]"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:paddingLeft="5px"
-        android:textSize="4.5pt" >
-    </TextView>
-    <TextView android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="4.5pt"
-        android:paddingLeft="5px"
-        android:text="Server settings: KerberosAppActivity.java" >
-    </TextView>
-
-    <!-- first row of buttons (kinit, klist, kvno, kdestroy -->
-    <LinearLayout android:id="@+id/linearLayout2" 
-        android:layout_height="wrap_content" 
-        android:layout_width="match_parent" 
-        android:weightSum="1" >
-            <Button android:id="@+id/button1"
-                android:layout_marginTop="10px"
-                android:layout_marginLeft="5px"
-                android:text="kinit"
-                android:layout_height="32dp"
-                android:layout_width="120px"
-                android:textSize="5pt" >
-            </Button>
-            <Button android:id="@+id/btnList"
-                android:layout_marginTop="10px"
-                android:text="klist"
-                android:layout_height="32dp"
-                android:layout_width="100px"
-                android:layout_weight="0.47"
-                android:textSize="5pt" >
-            </Button>
-            <Button android:id="@+id/btnVno"
-                android:text="kvno"
-                android:layout_marginTop="10px" 
-                android:layout_height="32dp" 
-                android:layout_width="100px"
-                android:layout_weight="0.45"
-                android:textSize="5pt" >
-            </Button>
-            <Button android:id="@+id/btnDestroy"
-                android:layout_marginTop="10px"
-                android:text="kdestroy" 
-                android:layout_height="32dp"
+            android:paddingTop="50px">
+            <TextView android:id="@+id/textView1"
+                android:textAppearance="?android:attr/textAppearanceMedium" 
+                android:layout_height="wrap_content" 
                 android:layout_width="wrap_content" 
-                android:textSize="5pt" >
-            </Button>
-    </LinearLayout>
+                android:layout_marginTop="10px" 
+                android:paddingLeft="5px" 
+                android:layout_marginBottom="10px"
+                android:text="Enter Client Principal Name:"
+                android:textSize="6pt" />
+            <EditText android:id="@+id/etClientPrincipal" 
+                android:layout_height="wrap_content" 
+                android:layout_width="match_parent" 
+                android:layout_marginLeft="5px" 
+                android:layout_marginRight="5px" />
 
-    <!-- second button row (Start Client App) -->
-    <LinearLayout android:id="@+id/linearLayout3" 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:orientation="vertical" >
-            <Button android:id="@+id/startButton"
-                android:text="Start Client App" 
-                android:layout_height="match_parent" 
-                android:layout_marginBottom="5px" 
-                android:layout_marginLeft="4px"
-                android:layout_width="315dp"
-                android:textStyle="bold" >
-            </Button>
-    </LinearLayout>
+            <!-- Password / keytab entry -->
+            <LinearLayout android:id="@+id/toggleLayout"
+                android:layout_height="wrap_content" 
+                android:layout_width="match_parent" >
+                <TextView android:id="@+id/toggleText"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="20px"
+                    android:paddingLeft="5px" 
+                    android:layout_marginBottom="10px"
+                    android:text="AUTH Method:"
+                    android:textSize="6pt" />
+                <RadioGroup android:id="@+id/authGroup"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton android:id="@+id/radio_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dip"
+                        android:checked="true"
+                        android:text="Password" />
+                    <RadioButton android:id="@+id/radio_keytab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dip"
+                        android:text="Keytab" />
+                </RadioGroup>
+            </LinearLayout>
+            <TextView android:id="@+id/password_label" 
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="0px"
+                android:paddingLeft="5px"
+                android:layout_marginBottom="10px"
+                android:text="Enter Password:"
+                android:textSize="6pt" />
+            <EditText android:id="@+id/password"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="5px"
+                android:layout_marginRight="5px"
+                android:password="true" />
+            <TextView android:id="@+id/keytab_label"
+                android:textAppearance="?android:attr/textAppearanceSmall" 
+                android:text="keytab location: /data/local/kerberos/krb5.keytab"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingLeft="5px"
+                android:layout_marginTop="0px"
+                android:layout_marginBottom="10px"
+                android:textSize="4.5pt" />
+            <View android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginTop="15px"
+                android:layout_marginBottom="10px"
+                android:background="#CCCCCC" />
 
-    <!-- output text box -->
-    <FrameLayout android:id="@+id/frameLayout1" 
-        android:layout_width="match_parent" 
-        android:background="#cccccc" 
-        android:paddingTop="10px" 
-        android:paddingLeft="5px" 
-        android:layout_marginLeft="10px" 
-        android:layout_marginRight="10px" 
-        android:layout_height="234dp" >
-        <TextView android:id="@+id/textView" 
-            android:text="" 
-            android:layout_height="wrap_content" 
-            android:layout_width="fill_parent" 
-            android:textColor="#000"
-            android:scrollbars="vertical" 
-            android:textSize="2pt" >
-        </TextView>
+            <!-- list default file locations -->
+            <TextView android:id="@+id/textView2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Defaults:"
+                android:textSize="5pt"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:paddingLeft="5px" 
+                android:textStyle="bold" />
+            <TextView android:id="@+id/textView3"
+                android:text="conf file: /data/local/kerberos/krb5.conf"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingLeft="5px"
+                android:textSize="4.5pt" />
+            <TextView android:id="@+id/textView5"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="ccache: /data/local/kerberos/ccache/krb5cc_[uid]"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingLeft="5px"
+                android:textSize="4.5pt" />
+            <TextView android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="4.5pt"
+                android:paddingLeft="5px"
+                android:text="Server settings: KerberosAppActivity.java" />
+
+            <!-- first row of buttons (kinit, klist, kvno, kdestroy -->
+            <LinearLayout android:id="@+id/linearLayout2" 
+                android:layout_height="wrap_content" 
+                android:layout_width="match_parent" 
+                android:weightSum="1" >
+                <Button android:id="@+id/button1"
+                    android:layout_marginTop="10px"
+                    android:layout_marginLeft="5px"
+                    android:text="kinit"
+                    android:layout_height="32dp"
+                    android:layout_width="120px"
+                    android:textSize="5pt" >
+                </Button>
+                <Button android:id="@+id/btnList"
+                    android:layout_marginTop="10px"
+                    android:text="klist"
+                    android:layout_height="32dp"
+                    android:layout_width="100px"
+                    android:layout_weight="0.47"
+                    android:textSize="5pt" >
+                </Button>
+                <Button android:id="@+id/btnVno"
+                    android:text="kvno"
+                    android:layout_marginTop="10px" 
+                    android:layout_height="32dp" 
+                    android:layout_width="100px"
+                    android:layout_weight="0.45"
+                    android:textSize="5pt" >
+                </Button>
+                <Button android:id="@+id/btnDestroy"
+                    android:layout_marginTop="10px"
+                    android:text="kdestroy" 
+                    android:layout_height="32dp"
+                    android:layout_width="wrap_content" 
+                    android:textSize="5pt" >
+                </Button>
+            </LinearLayout>
+            <!-- output text box -->
+            <FrameLayout android:id="@+id/frameLayout2" 
+                android:layout_width="match_parent" 
+                android:background="#cccccc" 
+                android:paddingTop="10px" 
+                android:paddingLeft="5px" 
+                android:layout_marginLeft="10px" 
+                android:layout_marginRight="10px" 
+                android:layout_height="220px" >
+            <TextView android:id="@+id/textViewClient" 
+                android:text="" 
+                android:layout_height="fill_parent" 
+                android:layout_width="fill_parent" 
+                android:textColor="#000"
+                android:scrollbars="vertical" 
+                android:textSize="2pt" >
+            </TextView>
+            </FrameLayout>
+        </LinearLayout> <!-- end of first tab -->
+
+        <!-- SECOND TAB -->
+        <LinearLayout android:id="@+id/tabview2" 
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" 
+            android:paddingTop="50px">
+
+            <!-- Enter your server principal name -->
+            <TextView android:id="@+id/tvServerPrincipalLabel"
+                android:textAppearance="?android:attr/textAppearanceMedium" 
+                android:layout_height="wrap_content" 
+                android:layout_width="wrap_content" 
+                android:layout_marginTop="10px" 
+                android:paddingLeft="5px" 
+                android:layout_marginBottom="10px"
+                android:text="Enter Server Principal Name:"
+                android:textSize="6pt" />
+            <EditText android:id="@+id/etServerPrincipal" 
+                android:layout_height="wrap_content" 
+                android:layout_width="match_parent" 
+                android:layout_marginLeft="5px" 
+                android:layout_marginRight="5px" />
+            <TextView android:id="@+id/serverPrincipalHint"
+                android:textAppearance="?android:attr/textAppearanceSmall" 
+                android:text="(ie: service@host)"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingLeft="5px"
+                android:layout_marginTop="0px"
+                android:layout_marginBottom="10px"
+                android:textSize="4.5pt" />
+            <TextView android:id="@+id/serverKeytabLabel"
+                android:textAppearance="?android:attr/textAppearanceSmall" 
+                android:text="keytab location: /data/local/kerberos/krb5.keytab"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingLeft="5px"
+                android:layout_marginTop="0px"
+                android:layout_marginBottom="10px"
+                android:textSize="4.5pt" />
+            <TextView android:id="@+id/tvServerIpLabel"
+                android:textAppearance="?android:attr/textAppearanceMedium" 
+                android:layout_height="wrap_content" 
+                android:layout_width="wrap_content" 
+                android:layout_marginTop="10px" 
+                android:paddingLeft="5px" 
+                android:layout_marginBottom="10px"
+                android:text="Enter Server IP Address:"
+                android:textSize="6pt" />
+            <EditText android:id="@+id/etServerIpAddress" 
+                android:layout_height="wrap_content" 
+                android:layout_width="match_parent" 
+                android:layout_marginLeft="5px" 
+                android:layout_marginRight="5px" />
+            <TextView android:id="@+id/tvServerPortLabel"
+                android:textAppearance="?android:attr/textAppearanceMedium" 
+                android:layout_height="wrap_content" 
+                android:layout_width="wrap_content" 
+                android:layout_marginTop="10px" 
+                android:paddingLeft="5px" 
+                android:layout_marginBottom="10px"
+                android:text="Enter Server Port Number:"
+                android:textSize="6pt" />
+            <EditText android:id="@+id/etServerPort" 
+                android:layout_height="wrap_content" 
+                android:layout_width="match_parent" 
+                android:layout_marginLeft="5px" 
+                android:layout_marginRight="5px" />
+        </LinearLayout> <!-- end of second tab -->
+    
+        <!-- THIRD TAB -->
+        <LinearLayout android:id="@+id/tabview3" 
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" 
+            android:paddingTop="50px">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+                <Button android:id="@+id/startButton"
+                    android:text="Start Client App" 
+                    android:layout_height="wrap_content" 
+                    android:layout_marginTop="10px"
+                    android:layout_marginBottom="5px" 
+                    android:layout_marginLeft="4px"
+                    android:layout_width="315dp"
+                    android:textStyle="bold" >
+                </Button>
+                <!-- output text box -->
+                <FrameLayout android:id="@+id/frameLayout1" 
+                    android:layout_width="match_parent" 
+                    android:background="#cccccc" 
+                    android:paddingTop="10px" 
+                    android:paddingLeft="5px" 
+                    android:layout_marginLeft="10px" 
+                    android:layout_marginRight="10px" 
+                    android:layout_height="605px" >
+                <TextView android:id="@+id/textViewApp" 
+                    android:text="" 
+                    android:layout_height="fill_parent" 
+                    android:layout_width="fill_parent" 
+                    android:textColor="#000"
+                    android:scrollbars="vertical" 
+                    android:textSize="2pt" >
+                </TextView>
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout> <!-- end of third tab -->
     </FrameLayout>
-
-</LinearLayout>
-
-</ScrollView>
+</TabHost>
