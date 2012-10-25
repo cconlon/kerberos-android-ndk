@@ -65,7 +65,10 @@ INSTALLING:
 
 To install this package in a running Android emulator, run:
 
-ant install
+ant <debug> install
+
+Where <debug> is either "debug" or "release", depending on what build
+configuration used with ndk-build.
 
 Before running the KerberosApp application, the user needs to install both
 a Keytab file and a Kerberos configuration file. Reference the MIT Kerberos
