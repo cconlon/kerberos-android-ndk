@@ -1,11 +1,11 @@
 
 Kerberos Android NDK Sample Application
 
-This is a sample Android NDK application which acts as a simple GUI wrapper
+This is a sample Android NDK application which provides a GUI wrapper
 around the MIT Kerberos kinit, klist, kvno, and kdestroy client 
-applications as well as provides a sample client which uses the Java 
-GSS-API interface. The GSS-API interface is a Java wrapper for the existing 
-Kerberos GSS-API C-bindings and was created using SWIG. 
+applications. It also provides a sample client which uses the Java 
+GSS-API interface. The GSS-API interface is a Java interface for the existing 
+native MIT GSS-API library.
 
 This package includes cross-compiled versions of the MIT Kerberos
 libraries as well as the CyaSSL Embedded SSL Library. It should be 
@@ -18,10 +18,25 @@ libraries which are needed in order to be linked to the KerberosApp
 application's native library (libkerberosapp.so).
 
 For detailed information on the Java GSS-API interface, please see the
-GSSAPI_README file included in this project's root directory.
+GSSAPI_README file included in this project's root directory or see the 
+kerberos-java-gssapi project on GitHub, here:
+
+https://github.com/cconlon/kerberos-java-gssapi
 
 ===========================================================================
-REQUIREMENTS:
+CONTENTS:
+
+1.  Requirements
+2.  Building
+3.  Installing
+4.  Usage
+5.  Default Storage Locations
+6.  Library Versions
+7.  Licenses
+8.  Support
+
+===========================================================================
+1. REQUIREMENTS:
 
 Before building or installing this package, you must have the Android SDK
 and NDK installed and set up on your system. It is also helpful to have the
@@ -34,13 +49,16 @@ Android NDK:  http://developer.android.com/sdk/ndk/index.html
 Android Emulator:
 https://developer.android.com/guide/developing/tools/emulator.html
 
+SWIG will also need to be installed in order to build the underlying
+GSS-API wrapper. To download and install SWIG, please visit see the project
+homepage at http://www.swig.org. This project has been developed using SWIG
+version 1.3.40 running on Linux.
+
 ===========================================================================
-BUILDING:
+2. BUILDING:
 
 To build and install this package, including Java GSS-API bindings, run
-the following commands. If you would like to use the GSS-API example
-client, please update your client and server settings in
-./src/edu/mit/kerberos/KerberosAppActivity.java before building the project.
+the following commands. 
 
 android update project -p . -s
 swig -java -package edu.mit.jgss.swig -outdir ./src/edu/mit/jgss/swig
@@ -53,15 +71,8 @@ android-config.sh shell script. This will allow the MIT Kerberos libraries
 to be cross-compiled for the Android platform. More detailed instructions 
 can be found in the script comments.
 
-NOTE: The SWIG GSS-API wrapper code takes care of loading the shared
-library using the System.loadLibrary(...) method. This means that you
-don't have to call System.loadLibrary() from your Java application 
-code, but you will need to verify the library name is correct in
-gsswrapper.i before running the "swig", "ndk-build", and "ant debug"
-commands.
-
 ===========================================================================
-INSTALLING:
+3. INSTALLING:
 
 To install this package in a running Android emulator, run:
 
@@ -84,10 +95,9 @@ directory, run:
 adb push krb5.conf /data/local/kerberos/
 adb push krb5.keytab /data/local/kerberos/
 
-The keytab file needs to contain an entry for the client principal (whose
-TGT will be obtained by using the "kinit" button in the sample Application.
-In order for the example client functionality to work, this same principal
-must be entered in KerberosAppActivity.java as clientName.
+If the application is set to use a client keytab instead of a password, the
+keytab file needs to contain an entry for the client principal (whose
+TGT will be obtained by using the "kinit" button in the sample Application).
 
 NOTE: hosts file
 ----------------
@@ -101,7 +111,46 @@ adb pull /system/etc/hosts ./
 adb push ./hosts /system/etc
 
 ===========================================================================
-DEFAULT STORAGE LOCATIONS:
+4. USAGE:
+
+This NDK application's GUI is split into three tabs:
+
+1. Client Info
+2. Server Info
+3. Client App
+
+These tabs should be addressed in the order they are listed above. A short
+summary of each is below.
+
+1. Client Info
+--------------
+This tab displays the wrappers around native kinit, klist, kvno, and kdestroy
+application code. It provides the functionality to get a ticket for a given
+client principal using either a keytab or password for principal
+authentication. The default configuration file and credential cache locations
+are listed on this screen as well.
+
+2. Server Info
+--------------
+This tab allows the user to enter information about the server which the
+client application will attempt to make a GSS-API connection with in Tab 3.
+Server principal name, IP address, and port number should be given in
+this tab.
+
+3. Client App
+-------------
+This tab allows the user to start the client GSS-API appliation. The client
+application will attempt to connect to the GSS-API server given in Tab 2, 
+using the client principal info gathered in Tab 1. This client application
+was designed to connect to the example server from the kerberos-java-gssapi
+package. The client app will do the following:
+
+    a) Establish a GSS-API context with the example server
+    b) Sign, encrypt, and send a message to the server
+    c) Verify the signature block returned by the server
+
+===========================================================================
+5. DEFAULT STORAGE LOCATIONS:
 
 The following locations are the default paths used for the Kerberos
 sample application.
@@ -116,18 +165,19 @@ the default locations in ./include/osconf.h when cross compiling the MIT
 kerberos libraries.
 
 ===========================================================================
-LIBRARY VERSIONS:
+6. LIBRARY VERSIONS:
 
 The CyaSSL and Kerberos libraries used in this package:
 
 CyaSSL 2.0.0rc3     
     http://www.yassl.com
 
-Kerberos SVN trunk (downloaded 11/7/2011)   
-    http://web.mit.edu/kerberos/
+Kerberos (cconlon krb5 fork) GitHub master
+    Repository: http://github.com/cconlon/krb5
+    Homepage: http://web.mit.edu/kerberos/
 
 ===========================================================================
-LICENSES:
+7. LICENSES:
 
 CyaSSL Embedded SSL Library -----------------------------------------------
 
@@ -150,30 +200,36 @@ CyaSSL Embedded SSL Library -----------------------------------------------
  
 MIT Kerberos Libraries: ---------------------------------------------------
 
- * Copyright 1990, 2008 by the Massachusetts Institute of Technology.
- * All Rights Reserved.
+ * Copyright (C) 2012 by the Massachusetts Institute of Technology.
+ * All rights reserved.
  *
- * Export of this software from the United States of America may
- *   require a specific license from the United States Government.
- *   It is the responsibility of any person or organization contemplating
- *   export to obtain such a license before exporting.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
  *
- * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
- * distribute this software and its documentation for any purpose and
- * without fee is hereby granted, provided that the above copyright
- * notice appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation, and that
- * the name of M.I.T. not be used in advertising or publicity pertaining
- * to distribution of the software without specific, written prior
- * permission.  Furthermore if you modify this software you must label
- * your software as modified software and not distribute it in such a
- * fashion that it might be confused with the original M.I.T. software.
- * M.I.T. makes no representations about the suitability of
- * this software for any purpose.  It is provided "as is" without express
- * or implied warranty.
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in
+ *   the documentation and/or other materials provided with the
+ *   distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ===========================================================================
-SUPPORT:
+8. SUPPORT:
 
 If you have any questions or comments, please contact
 support@yassl.com or the MIT Kerberos community.

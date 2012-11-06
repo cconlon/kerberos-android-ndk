@@ -3,24 +3,30 @@
  * Copyright (C) 2012 by the Massachusetts Institute of Technology.
  * All rights reserved.
  *
- * Export of this software from the United States of America may
- *   require a specific license from the United States Government.
- *   It is the responsibility of any person or organization contemplating
- *   export to obtain such a license before exporting.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
  *
- * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
- * distribute this software and its documentation for any purpose and
- * without fee is hereby granted, provided that the above copyright
- * notice appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation, and that
- * the name of M.I.T. not be used in advertising or publicity pertaining
- * to distribution of the software without specific, written prior
- * permission.  Furthermore if you modify this software you must label
- * your software as modified software and not distribute it in such a
- * fashion that it might be confused with the original M.I.T. software.
- * M.I.T. makes no representations about the suitability of
- * this software for any purpose.  It is provided "as is" without express
- * or implied warranty.
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in
+ *   the documentation and/or other materials provided with the
+ *   distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Original source developed by yaSSL (http://www.yassl.com)
  *
@@ -28,17 +34,16 @@
  * 
  * Android application to perform the basic functionality of Kerberos' Kinit, 
  * Klist, Kvno, and Kdestroy, as well as acting as a simple example GSSAPI 
- * client application. In other words,
- *      (1) Get a ticket with Kinit
- *      (2) List the ticket with Klist
- *      (3) Get service ticket with Kvno
- *      (4) Destroy the ticket with Kdestroy
- *      (5) Start example GSSAPI client to do the following:
+ * client application. This functionality is spread across three GUI tabs.
+ * Functionality includes:
+ *      - Get a ticket with kinit
+ *      - List the ticket with klist
+ *      - Get service ticket with kvno
+ *      - Destroy the ticket cache with kdestroy
+ *      - Start example GSS-API client to do the following:
  *          a) Establish a GSSAPI context with the example server
- *          b) Send a wrapped message to the server and verify the returned
- *             signature block. Using gss_wrap / gss_verify_mic.
- *          c) Repeat step b) but using gss_seal / gss_verify
- *          d) Perform misc. GSSAPI function tests
+ *          b) Sign, encrypt, and send a message to the server
+ *          c) Verify the signature block returned by the server
  */
 package edu.mit.kerberos;
 
