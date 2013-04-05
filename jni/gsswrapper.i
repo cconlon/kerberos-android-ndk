@@ -35,7 +35,7 @@
  *
  * This file is used by SWIG to generate the Java GSS-API SWIG wrapper,
  * used to create the edu.mit.jgss.swig package, subsequently used in the
- * MIT implementatio of RFC 5653 (package edu.mit.jgss).
+ * MIT implementation of RFC 5653 (package edu.mit.jgss).
  *
  */
 
@@ -81,7 +81,7 @@
     } gss_name_t_desc;
 
     /* 
-     * Hand-rolled JNI function for retreival of gss_buffer_t 
+     * Hand-rolled JNI function for retrieval of gss_buffer_t 
      * value by Java. Requires gss_buffer_desc as input.
      */
     JNIEXPORT jbyteArray JNICALL 
@@ -349,11 +349,11 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
 %apply (char * BYTE, int LENGTH) { (char * byteArray, long len) };*/
 %typemap(in) (char * BYTE, int LENGTH) {
     $1 = NULL;
-    $2 = 0;
+    $2 = NULL;
     if ($input != NULL) {
         /* Get our Java byte array as a char * */
-        jboolean isCopy;
-        const char* nativeArray = (char*) (*jenv)->GetByteArrayElements(jenv, $input, &isCopy);
+        const char* nativeArray = 
+            (char*) (*jenv)->GetByteArrayElements(jenv, $input, NULL);
 
         /* Get the length of our byte array */
         $2 = (*jenv)->GetArrayLength(jenv, $input);
@@ -363,9 +363,7 @@ typedef unsigned int uint32_t;  /* for SWIG convienence */
         strcpy($1, nativeArray);
 
         /* Release the Java byte[] */
-        if (isCopy) {
-            (*jenv)->ReleaseByteArrayElements(jenv, $input, nativeArray, JNI_ABORT);
-        }
+        (*jenv)->ReleaseByteArrayElements(jenv, $input, nativeArray, JNI_ABORT);
     }
 }
 %typemap(jni) (char * BYTE, int LENGTH) "jbyteArray"
@@ -1492,6 +1490,10 @@ gss_inquire_mech_for_saslname(
 struct extensions
 ===========================================================================
 */
+
+/* Release the char * after constructing a Java String */
+%newobject gss_buffer_desc::toString();
+
 %extend gss_buffer_desc {
     gss_buffer_desc() {
         return (gss_buffer_desc *) calloc(1,sizeof(gss_buffer_desc));
@@ -1525,6 +1527,10 @@ struct extensions
     }
 }
 
+/* Release the char * after constructing a Java String */
+%newobject gss_OID_desc::toString();
+%newobject gss_OID_desc::toDotString();
+
 %extend gss_OID_desc {
     gss_OID_desc() {
        gss_OID_desc *ret = (gss_OID_desc *) calloc(1, sizeof(gss_OID_desc));
@@ -1548,8 +1554,6 @@ struct extensions
 
     gss_OID_desc(char * byteArray, long len) {
         gss_OID_desc *newoid;
-        /*OM_uint32 maj_status, min_status;
-        int i;*/
 
         newoid = (gss_OID_desc *) calloc (1, sizeof(gss_OID_desc));
         newoid->length = len;
@@ -1585,25 +1589,31 @@ struct extensions
      * "{ 1 2 ... 233 }"
      */
     char * toString() {
-        OM_uint32 maj_status, min_status, msg_ctx;
-        gss_buffer_t oidString;
+        OM_uint32 maj_status, min_status;
+        gss_buffer_desc oidBuf;
+        char* ret;
 
         maj_status = 0;
         min_status = 0;
-        msg_ctx = 0;
-
-        oidString = malloc(sizeof(gss_buffer_t));
 
         if ($self) {
             /* Convert OID into string representation */
-            maj_status = gss_oid_to_str(&min_status, $self, oidString);
-
-            if (maj_status == GSS_S_COMPLETE) {
-                return ((char *) oidString->value);
-            } else {
-                maj_status = gss_release_buffer(&min_status, oidString);
+            maj_status = gss_oid_to_str(&min_status, $self, &oidBuf);
+            if (maj_status != GSS_S_COMPLETE) {
                 return NULL;
             }
+
+            /*
+             * Allocate a buffer and copy the oid to it. This buffer
+             * will be freed automatically by the intermediate JNI layers.
+             */
+            ret = (char *)malloc(oidBuf.length);
+            memcpy(ret, oidBuf.value, oidBuf.length);
+
+            /* Release the gss_buffer_desc */
+            gss_release_buffer(&min_status, &oidBuf);
+
+            return ret;
         } else {
             return NULL;
         }
@@ -1614,8 +1624,8 @@ struct extensions
      * "1.2. ... .233"
      */
     char * toDotString() {
-        OM_uint32 maj_status, min_status, msg_ctx;
-        gss_buffer_t oidString;
+        OM_uint32 maj_status, min_status;
+        gss_buffer_desc oidBuf;
         char *newString;
         int elements = 0;
         int i = 0;
@@ -1623,24 +1633,19 @@ struct extensions
 
         maj_status = 0;
         min_status = 0;
-        msg_ctx = 0;
-
-        oidString = malloc(sizeof(gss_buffer_t));
 
         if ($self) {
 
             /* convert OID into native string representation "{1 2 ... 2}" */
-            maj_status = gss_oid_to_str(&min_status, $self, oidString);
-
+            maj_status = gss_oid_to_str(&min_status, $self, &oidBuf);
             if (maj_status != GSS_S_COMPLETE) {
-                maj_status = gss_release_buffer(&min_status, oidString);
                 return NULL;
             }
 
             /* determine correct length of new string */
-            for (i = 0; ((char*)oidString->value)[i] != '\0'; i++) {
-                if (((char*)oidString->value)[i] != '{' &&
-                    ((char*)oidString->value)[i] != '}') {
+            for (i = 0; ((char*)oidBuf.value)[i] != '\0'; i++) {
+                if (((char*)oidBuf.value)[i] != '{' &&
+                    ((char*)oidBuf.value)[i] != '}') {
                     elements++;
                 }
             }
@@ -1648,20 +1653,23 @@ struct extensions
             newString = malloc(elements + 1);
 
             /* create new dot-separated string */
-            for (i = 0; ((char*)oidString->value)[i] != '\0'; i++) {
-                if (((char*)oidString->value)[i] != ' ' &&
-                    ((char*)oidString->value)[i] != '{' &&
-                    ((char*)oidString->value)[i] != '}') {
-                    newString[j] = ((char*)oidString->value)[i];
+            for (i = 0; ((char*)oidBuf.value)[i] != '\0'; i++) {
+                if (((char*)oidBuf.value)[i] != ' ' &&
+                    ((char*)oidBuf.value)[i] != '{' &&
+                    ((char*)oidBuf.value)[i] != '}') {
+                    newString[j] = ((char*)oidBuf.value)[i];
                     j++;
-                } else if (((char*)oidString->value)[i] == ' ' &&
-                           ((char*)oidString->value)[i-1] != '{' &&
-                           ((char*)oidString->value)[i+1] != '}') {
+                } else if (((char*)oidBuf.value)[i] == ' ' &&
+                           ((char*)oidBuf.value)[i-1] != '{' &&
+                           ((char*)oidBuf.value)[i+1] != '}') {
                     newString[j] = '.';
                     j++;
                 }
             }
             newString[j] = '\0';
+
+            /* Release the buffer */
+            gss_release_buffer(&min_status, &oidBuf);
             return newString;
 
         } else {
@@ -1673,7 +1681,7 @@ struct extensions
        If this isn't here, we get often get a segfault when running
        client applications when Java tries to free memory it shouldn't. */
     ~gss_OID_desc() {
-        /*gss_OID_desc *oid = $self;*/
+        gss_OID_desc *oid = $self;
     }
 }
 
