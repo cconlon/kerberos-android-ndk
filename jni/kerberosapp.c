@@ -154,7 +154,6 @@ JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeSetKRB5CC
     args = (*env)->GetStringUTFChars(env, argString, &isCopy);
 
     ret = setenv("KRB5CCNAME", args, 1);
-    ret = setenv("KRB5_CONFIG", "/data/local/krb5.conf", 1);
 
     /* free argString */
     (*env)->ReleaseStringUTFChars(env, argString, args);

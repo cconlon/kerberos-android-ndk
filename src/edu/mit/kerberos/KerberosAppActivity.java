@@ -76,10 +76,10 @@ public class KerberosAppActivity extends TabActivity
     /* Native JNI function declarations */
     public native int nativeSetKRB5CCNAME(String path);
     public native int nativeSetKRB5CONFIG(String path);
-	public native int nativeKinit(String argv, int argc);
-	public native int nativeKlist(String argv, int argc);
-	public native int nativeKvno(String argv, int argc);
-	public native int nativeKdestroy(String argv, int argc);
+    public native int nativeKinit(String argv, int argc);
+    public native int nativeKlist(String argv, int argc);
+    public native int nativeKvno(String argv, int argc);
+    public native int nativeKdestroy(String argv, int argc);
 
     /* Server Information for Client Application */    
     private static int port                = 0;
