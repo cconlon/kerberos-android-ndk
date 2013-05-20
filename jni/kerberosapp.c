@@ -154,6 +154,34 @@ JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeSetKRB5CC
     args = (*env)->GetStringUTFChars(env, argString, &isCopy);
 
     ret = setenv("KRB5CCNAME", args, 1);
+    ret = setenv("KRB5_CONFIG", "/data/local/krb5.conf", 1);
+
+    /* free argString */
+    (*env)->ReleaseStringUTFChars(env, argString, args);
+    
+    return ret;
+}
+
+/*
+ * Class:     edu_mit_kerberos_KerberosAppActivity
+ * Method:    nativeSetKRB5CONFIG
+ * Signature: (Ljava/lang/String)I
+ *
+ * Set the KRB5_CONFIG environment variable to point to our desired
+ * Kerberos configuration file.
+ *
+ */
+JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeSetKRB5CONFIG
+  (JNIEnv* env, jobject obj, jstring argString)
+{
+    jboolean isCopy;
+    int ret;
+    const char *args;
+
+    /* Get original KRB5_CONFIG path string from Java */
+    args = (*env)->GetStringUTFChars(env, argString, &isCopy);
+
+    ret = setenv("KRB5_CONFIG", args, 1);
 
     /* free argString */
     (*env)->ReleaseStringUTFChars(env, argString, args);

@@ -159,10 +159,18 @@ Kerberos config file:   /data/local/kerberos/krb5.conf
 Credentials cache:      /data/local/kerberos/ccache/krb5cc_<uid>
 Keytab:                 /data/local/kerberos/krb5.keytab
 
-The credentials cache location may be changed in KerberosAppActivity.java.
-The Kerberos config file and keytab file locations may be changed by editing
-the default locations in ./include/osconf.h when cross compiling the MIT 
-kerberos libraries.
+The Kerberos configuration file and credentials cache locations may be
+changed in the KerberosAppActivity.java file. The configuration file
+(krb5.conf) location is changed by altering the static defaultKRB5_CONFIG
+variable. This is used in native JNI code to set the KRB5_CONFIG
+environment variable. The credentials cache location is set in the
+onCreate() method, specifically with the nativeSetKRB5CCNAME() method.
+
+The Kerberos keytab file location may be changed by editing the default
+locations in ./include/osconf.h when cross compiling the MIT kerberos
+libraries. The default Kerberos configuration file (krb5.conf) location
+may also be set in osconf.h before cross compiling the MIT Kerberos
+libraries by modifying the DEFAULT_SECURE_PROFILE_PATH define.
 
 ===========================================================================
 6. LIBRARY VERSIONS:

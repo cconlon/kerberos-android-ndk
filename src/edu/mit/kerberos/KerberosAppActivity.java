@@ -75,6 +75,7 @@ public class KerberosAppActivity extends TabActivity
 {
     /* Native JNI function declarations */
     public native int nativeSetKRB5CCNAME(String path);
+    public native int nativeSetKRB5CONFIG(String path);
 	public native int nativeKinit(String argv, int argc);
 	public native int nativeKlist(String argv, int argc);
 	public native int nativeKvno(String argv, int argc);
@@ -103,6 +104,10 @@ public class KerberosAppActivity extends TabActivity
     /* Return values */
     private static int FAILURE = -1;
     private static int SUCCESS = 0;
+
+    /* default kerberos configuration file location, used to set
+       native KRB5_CONFIG environment variable */
+    private static String defaultKRB5_CONFIG = "/data/local/kerberos/krb5.conf";
 
     /* Load our native library for SWIG stuff and native JNI functions */
     static {
@@ -400,13 +405,22 @@ public class KerberosAppActivity extends TabActivity
         TextView tv2 = (TextView) findViewById(R.id.textViewClient);
         tv2.setMovementMethod(new ScrollingMovementMethod());
         tv2.setTextSize(11);
-	    
+	   
+        /* Set location of Kerberos ticket cache */ 
         uid = android.os.Process.myUid();
         ret = nativeSetKRB5CCNAME("/data/local/kerberos/ccache/krb5cc_" + uid);
         if (ret == 0) {
             tv2.append("Successfully set KRB5CCNAME path\n");
         } else {
             tv2.append("Failed to set KRB5CCNAME path correctly\n");
+        }
+
+        /* Set location of Kerberos configuration file (krb5.conf) */
+        ret = nativeSetKRB5CONFIG(defaultKRB5_CONFIG);
+        if (ret == 0) {
+            tv2.append("Successfully set KRB5_CONFIG path\n");
+        } else {
+            tv2.append("Failed to set KRB5_CONFIG path correctly\n");
         }
         
     }

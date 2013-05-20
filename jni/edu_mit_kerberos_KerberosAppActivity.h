@@ -51,6 +51,18 @@ JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeSetKRB5CC
 
 /*
  * Class:     edu_mit_kerberos_KerberosAppActivity
+ * Method:    nativeSetKRB5CONFIG
+ * Signature: (Ljava/lang/String)I
+ *
+ * Set the KRB5_CONFIG environment variable to point to our desired
+ * Kerberos configuration file.
+ *
+ */
+JNIEXPORT jint JNICALL Java_edu_mit_kerberos_KerberosAppActivity_nativeSetKRB5CONFIG
+  (JNIEnv* env, jobject obj, jstring argString);
+
+/*
+ * Class:     edu_mit_kerberos_KerberosAppActivity
  * Method:    nativeKinit
  * Signature: (Ljava/lang/String;I)I
  */
