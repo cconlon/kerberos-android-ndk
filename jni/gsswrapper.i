@@ -184,7 +184,7 @@ custom Java code
         try {
             System.loadLibrary("kerberosapp");
         } catch(UnsatisfiedLinkError e) {
-            System.err.println("Unable to load libgsswrapper. " + 
+            System.err.println("Unable to load libkerberosapp. " + 
                     "Check LD_LIBRARY_PATH environment variable.\n" + e);
             System.exit(1);
         }
