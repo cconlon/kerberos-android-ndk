@@ -178,7 +178,7 @@ libraries by modifying the DEFAULT_SECURE_PROFILE_PATH define.
 The CyaSSL and Kerberos libraries used in this package:
 
 CyaSSL 2.0.0rc3     
-    http://www.yassl.com
+    http://www.wolfssl.com
 
 Kerberos (cconlon krb5 fork) GitHub master
     Repository: http://github.com/cconlon/krb5
@@ -189,7 +189,7 @@ Kerberos (cconlon krb5 fork) GitHub master
 
 CyaSSL Embedded SSL Library -----------------------------------------------
 
- * Copyright (C) 2006-2012 Sawtooth Consulting Ltd.
+ * Copyright (C) 2006-2013 wolfSSL Inc.
  *
  * CyaSSL is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,5 +241,5 @@ MIT Kerberos Libraries: ---------------------------------------------------
 
 If you have any questions or comments, please post to the krbdev mailing
 list (http://web.mit.edu/kerberos/mail-lists.html) or contact
-support@yassl.com.
+support@wolfssl.com.
 
