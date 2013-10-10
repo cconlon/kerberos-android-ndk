@@ -28,7 +28,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Original source developed by yaSSL (http://www.yassl.com)
+ * Original source developed by wolfSSL (http://www.wolfssl.com)
  *
  * Description: 
  * 

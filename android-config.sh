@@ -2,7 +2,7 @@
 
 #
 # Program : android-configure.sh
-# Author  : Chris Conlon, yaSSL (www.yassl.com)
+# Author  : Chris Conlon, wolfSSL (www.wolfssl.com)
 #
 # Date    : February 15, 2012
 #
@@ -46,7 +46,7 @@ export AR="${CCTOOL}ar"
 
 ## Point these to your cross-compiled CyaSSL library location. CyaSSL can be
 ## built for Android using the cyassl-android-ndk package or by
-## cross-compiling it for Android using yaSSL's shell script (www.yassl.com)
+## cross-compiling it for Android using wolfSSL's shell script (www.wolfssl.com)
 ## and the Android NDK Standalone toolchain.
 export CYASSL_LIB="/Users/chrisc/android/projects/cyassl-android-ndk/obj/local/armeabi"
 export CYASSL_INC="/Users/chrisc/android/projects/cyassl-android-ndk/jni/cyassl/include"

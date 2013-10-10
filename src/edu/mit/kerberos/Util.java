@@ -22,7 +22,7 @@
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
- * Original source developed by yaSSL (http://www.yassl.com)
+ * Original source developed by wolfSSL (http://www.wolfssl.com)
  *
  * Java MIT Kerberos GSS-API interface utility functions.
  *

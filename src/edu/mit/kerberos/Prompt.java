@@ -22,7 +22,7 @@
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
- * Original source developed by yaSSL (http://www.yassl.com). Prompt.java
+ * Original source developed by wolfSSL (http://www.wolfssl.com). Prompt.java
  * class contributed by Caleb Callaway to enable kinit password functionality.
  *
  */
