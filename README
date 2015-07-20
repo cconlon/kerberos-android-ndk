@@ -2,23 +2,23 @@
 Kerberos Android NDK Sample Application
 
 This is a sample Android NDK application which provides a GUI wrapper
-around the MIT Kerberos kinit, klist, kvno, and kdestroy client 
-applications. It also provides a sample client which uses the Java 
-GSS-API interface. The GSS-API interface is a Java interface for the existing 
+around the MIT Kerberos kinit, klist, kvno, and kdestroy client
+applications. It also provides a sample client which uses the Java
+GSS-API interface. The GSS-API interface is a Java interface for the existing
 native MIT GSS-API library.
 
 This package includes cross-compiled versions of the MIT Kerberos
-libraries as well as the CyaSSL Embedded SSL Library. It should be 
-helpful to Android developers who are interested in using the 
-Kerberos libraries or the GSS-API interface in their own Android NDK 
+libraries as well as the wolfSSL (formerly CyaSSL) Embedded SSL Library.
+It should be helpful to Android developers who are interested in using the
+Kerberos libraries or the GSS-API interface in their own Android NDK
 Applications.
 
-By default, this package uses pre-built static Kerberos and CyaSSL 
-libraries which are needed in order to be linked to the KerberosApp 
+By default, this package uses pre-built static Kerberos and CyaSSL
+libraries which are needed in order to be linked to the KerberosApp
 application's native library (libkerberosapp.so).
 
 For detailed information on the Java GSS-API interface, please see the
-GSSAPI_README file included in this project's root directory or see the 
+GSSAPI_README file included in this project's root directory or see the
 kerberos-java-gssapi project on GitHub, here:
 
 https://github.com/cconlon/kerberos-java-gssapi
@@ -41,7 +41,7 @@ CONTENTS:
 Before building or installing this package, you must have the Android SDK
 and NDK installed and set up on your system. It is also helpful to have the
 Android Emulator set up and configured with an Android platform greater
-than or equal to version 2.3.3 (Gingerbread). For details on downloading and 
+than or equal to version 2.3.3 (Gingerbread). For details on downloading and
 setting these up, please see the following links:
 
 Android SDK:  http://developer.android.com/sdk/index.html
@@ -58,7 +58,7 @@ version 1.3.40 running on Linux.
 2. BUILDING:
 
 To build and install this package, including Java GSS-API bindings, run
-the following commands. 
+the following commands.
 
 android update project -p . -s
 swig -java -package edu.mit.jgss.swig -outdir ./src/edu/mit/jgss/swig
@@ -68,7 +68,7 @@ ant debug
 
 If you want to rebuild the pre-built Kerberos libraries, please use the
 android-config.sh shell script. This will allow the MIT Kerberos libraries
-to be cross-compiled for the Android platform. More detailed instructions 
+to be cross-compiled for the Android platform. More detailed instructions
 can be found in the script comments.
 
 ===========================================================================
@@ -88,8 +88,8 @@ can be installed using the adb push command, using:
 
 adb push <local-file-path> <destination-file-path>
 
-For example, to load a krb5.conf and krb5.keytab file from the current 
-directory to an Android emulator under the /data/local/kerberos 
+For example, to load a krb5.conf and krb5.keytab file from the current
+directory to an Android emulator under the /data/local/kerberos
 directory, run:
 
 adb push krb5.conf /data/local/kerberos/
@@ -140,7 +140,7 @@ this tab.
 3. Client App
 -------------
 This tab allows the user to start the client GSS-API appliation. The client
-application will attempt to connect to the GSS-API server given in Tab 2, 
+application will attempt to connect to the GSS-API server given in Tab 2,
 using the client principal info gathered in Tab 1. This client application
 was designed to connect to the example server from the kerberos-java-gssapi
 package. The client app will do the following:
@@ -175,10 +175,10 @@ libraries by modifying the DEFAULT_SECURE_PROFILE_PATH define.
 ===========================================================================
 6. LIBRARY VERSIONS:
 
-The CyaSSL and Kerberos libraries used in this package:
+The wolfSSL (formerly CyaSSL) and Kerberos libraries used in this package:
 
-CyaSSL 2.0.0rc3     
-    http://www.wolfssl.com
+CyaSSL 2.0.0rc3
+    https://www.wolfssl.com
 
 Kerberos (cconlon krb5 fork) GitHub master
     Repository: http://github.com/cconlon/krb5
@@ -189,7 +189,7 @@ Kerberos (cconlon krb5 fork) GitHub master
 
 CyaSSL Embedded SSL Library -----------------------------------------------
 
- * Copyright (C) 2006-2013 wolfSSL Inc.
+ * Copyright (C) 2006-2015 wolfSSL Inc.
  *
  * CyaSSL is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,7 +205,7 @@ CyaSSL Embedded SSL Library -----------------------------------------------
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
- 
+
 MIT Kerberos Libraries: ---------------------------------------------------
 
  * Copyright (C) 2012 by the Massachusetts Institute of Technology.
